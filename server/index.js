@@ -204,15 +204,6 @@ app.delete('/api/testimonials/:id', requireAuth, async (req, res) => {
     }
 });
 
-app.post('/api/testimonials/reset', requireAuth, async (req, res) => {
-    try {
-        await Testimonial.deleteMany({});
-        const inserted = await Testimonial.insertMany(DEFAULT_TESTIMONIALS);
-        res.json(inserted);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
 
 // ═══════════════════════════════════════════════════════════════════════════
 // CONTACT MESSAGES ROUTES
