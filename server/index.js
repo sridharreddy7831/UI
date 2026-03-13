@@ -68,66 +68,22 @@ app.use(cors({
 app.use(express.json());
 
 // ─── MongoDB: serverless-safe connection ─────────────────────────────────────
-const DEFAULT_TESTIMONIALS = [
-    { name: 'Priya & Arjun', occasion: 'Wedding Invitation', rating: 5, description: 'Uthsav captured the essence of our wedding perfectly. The digital invitation had guests in awe before they even arrived. Absolutely magical!', avatarUrl: 'https://images.unsplash.com/photo-1604881991720-f91add269bed?w=400&auto=format&fit=crop&q=80', emoji: '💍', order: 0 },
-    { name: 'Meena Krishnan', occasion: 'Baby Shower Invitation', rating: 5, description: 'The baby shower invitation was stunning — soft, warm, and so interactive! Everyone was sharing it on WhatsApp. Highly recommend!', avatarUrl: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=400&auto=format&fit=crop&q=80', emoji: '🍼', order: 1 },
-    { name: 'Ravi & Sunita', occasion: 'Housewarming Ceremony', rating: 5, description: 'Our housewarming invite had a beautiful 3D walkthrough of our new home. Guests loved it and it set the perfect mood for the celebration.', avatarUrl: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&auto=format&fit=crop&q=80', emoji: '🏡', order: 2 },
-    { name: 'Ananya Sharma', occasion: 'Birthday Celebration', rating: 4.5, description: "My daughter's 1st birthday invitation was a dream! The animations, music, and photos all blended seamlessly. Worth every penny.", avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80', emoji: '🎂', order: 3 },
-];
-
-let dbConnected = false;
+let cachedDb = null;
 
 const connectDB = async () => {
-    if (dbConnected && mongoose.connection.readyState === 1) return;
-    await mongoose.connect(process.env.MONGO_URI, {
-        serverSelectionTimeoutMS: 8000,
-        connectTimeoutMS: 8000,
+    if (cachedDb && mongoose.connection.readyState === 1) {
+        return cachedDb;
+    }
+    
+    // Fail fast in serverless
+    const db = await mongoose.connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 5000, // 5 seconds instead of hanging for 300s
+        socketTimeoutMS: 45000,
     });
-    dbConnected = true;
+    
+    cachedDb = db;
     console.log('✅ MongoDB connected');
-
-    // Seed default testimonials if empty
-    const count = await Testimonial.countDocuments();
-    if (count === 0) {
-        await Testimonial.insertMany(DEFAULT_TESTIMONIALS);
-        console.log('🌱 Seeded default testimonials');
-    }
-
-    // Seed default admin users
-    const adminCount = await AdminUser.countDocuments();
-    if (adminCount <= 1) {
-        const users = [
-            { name: 'Uthsav Admin', email: 'admin@uthsav.com', password: 'uthsav2024' },
-            { name: 'Sridhar', email: 'sridhar@uthsav.com', password: 'Majeeda@2121' },
-            { name: 'Nikkitha', email: 'nikkitha@uthsav.com', password: 'Majeeda@2121' }
-        ];
-        for (const u of users) {
-            const exists = await AdminUser.findOne({ email: u.email });
-            if (!exists) {
-                await AdminUser.create(u);
-                console.log(`🔐 Admin account created: ${u.name} (${u.email})`);
-            }
-        }
-    }
-
-    // Seed initial showcases
-    const scCount = await Showcase.countDocuments();
-    if (scCount === 0) {
-        const initial = [
-            { category: 'wedding-invitations', name: "Anjali & Vikram", description: "A royal Rajasthani wedding theme with intricate mandap designs and 3D walkthroughs.", image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=600&auto=format&fit=crop&q=80" },
-            { category: 'wedding-invitations', name: "The Grand Telugu Wedding", description: "Cinematic traditional Telugu wedding with floral transitions and live music.", image: "https://images.unsplash.com/photo-1595801202811-799d632007dc?w=600&auto=format&fit=crop&q=80" },
-            { category: 'housewarming-invitations', name: "The Villa Launch", description: "Sleek and modern housewarming invite with interactive 3D floor plans.", image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&auto=format&fit=crop&q=80" },
-            { category: 'housewarming-invitations', name: "Griha Pravesh @ Skyline", description: "Elegant and traditional invitation for a high-rise apartment ceremony.", image: "https://images.unsplash.com/photo-1524758631624-e2822e304c36?w=600&auto=format&fit=crop&q=80" },
-            { category: 'birthday-invitations', name: "Zoe's 1st Birthday", description: "Wild one theme with balloon pops and interactive animal animations.", image: "https://images.unsplash.com/photo-1513151233558-d860c5398176?w=600&auto=format&fit=crop&q=80" },
-            { category: 'birthday-invitations', name: "The Sweet 16 Bash", description: "Trendy glam design with neon effects and Spotify integration.", image: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=600&auto=format&fit=crop&q=80" },
-            { category: 'baby-shower-invitations', name: "Welcome Baby Boy", description: "Cloud theme with soft blue gradients and interactive nursery mobile.", image: "https://images.unsplash.com/photo-1515488126937-2309f7831d4d?w=600&auto=format&fit=crop&q=80" },
-            { category: 'baby-shower-invitations', name: "Princess Baby Shower", description: "Elegant and whimsical invitation with castle and tiara animations.", image: "https://images.unsplash.com/photo-1492238407425-63852077e6f8?w=600&auto=format&fit=crop&q=80" },
-            { category: 'engagement-invitations', name: "Eternal Promise", description: "Minimalist engagement invite with sunset theme and timeline feature.", image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=600&auto=format&fit=crop&q=80" },
-            { category: 'engagement-invitations', name: "Engagement of Rohan", description: "Grand and luxurious invitation with animated ring box reveal.", image: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&auto=format&fit=crop&q=80" },
-        ];
-        await Showcase.insertMany(initial);
-        console.log('🚀 Seeded initial showcases');
-    }
+    return db;
 };
 
 // Connect on every request (safe — skips if already connected)
