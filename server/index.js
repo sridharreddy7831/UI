@@ -57,14 +57,7 @@ const sendInquiryAlert = async (msg) => {
 };
 
 // ─── Middleware ──────────────────────────────────────────────────────────────
-app.use(cors({
-    origin: [
-        'http://localhost:5173',
-        'http://localhost:5174',
-        'http://localhost:4173',
-        'https://uthsav-invites.vercel.app',
-    ],
-}));
+app.use(cors()); // Allow all origins since frontend and backend are on different Render domains
 app.use(express.json());
 
 // ─── MongoDB: serverless-safe connection ─────────────────────────────────────
