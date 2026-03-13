@@ -79,7 +79,10 @@ let dbConnected = false;
 
 const connectDB = async () => {
     if (dbConnected && mongoose.connection.readyState === 1) return;
-    await mongoose.connect(process.env.MONGO_URI);
+    await mongoose.connect(process.env.MONGO_URI, {
+        serverSelectionTimeoutMS: 8000,
+        connectTimeoutMS: 8000,
+    });
     dbConnected = true;
     console.log('✅ MongoDB connected');
 
