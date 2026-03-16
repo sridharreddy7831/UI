@@ -455,10 +455,6 @@ export default function AdminPage() {
                                     : <><LogIn size={18} /> Sign In</>}
                             </button>
                         </form>
-
-                        <p className="text-center text-zinc-600 text-[10px] sm:text-xs font-sans pt-5 border-t border-white/5 mt-6">
-                            Admins: <span className="text-zinc-500">sridhar@uthsav.com</span>, <span className="text-zinc-500">nikkitha@uthsav.com</span> (Password: <span className="text-zinc-400">Majeeda@2121</span>)
-                        </p>
                     </div>
                 </motion.div>
             </div>
