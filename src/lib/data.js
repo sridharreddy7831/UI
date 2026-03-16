@@ -6,7 +6,9 @@ export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
 export const removeToken = () => localStorage.removeItem(TOKEN_KEY);
 
 // ─── Fetch helpers ───────────────────────────────────────────────────────────
-const BASE = (import.meta.env.VITE_API_URL || '') + '/api';
+// Ensure the base URL is stable even if env var includes a trailing slash
+const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+const BASE = `${API_BASE}/api`;
 
 const handleErr = async (res) => {
     if (!res.ok) {
@@ -21,11 +23,13 @@ const handleErr = async (res) => {
 // Authenticated fetch (includes JWT bearer token)
 const authFetch = (url, options = {}) => {
     const token = getToken();
+    if (!token) return Promise.reject(new Error('Not authenticated'));
+
     return fetch(url, {
         ...options,
         headers: {
             'Content-Type': 'application/json',
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            Authorization: `Bearer ${token}`,
             ...(options.headers || {}),
         },
     }).then(handleErr);
@@ -107,8 +111,10 @@ export const clearAllMessages = () =>
 export const getShowcases = () =>
     authFetch(`${BASE}/showcases`);
 
-export const getShowcasesByCategory = (category) =>
-    publicFetch(`${BASE}/showcases/${category}`);
+export const getShowcasesByCategory = (category) => {
+    if (!category) return Promise.reject(new Error('Category required'));
+    return publicFetch(`${BASE}/showcases/${category}`);
+};
 
 export const createShowcase = (data) =>
     authFetch(`${BASE}/showcases`, {

@@ -173,7 +173,7 @@ export default function AdminPage() {
         if (!token) { setAuthLoading(false); return; }
         getMe()
             .then(({ admin: a }) => { setAdmin(a); setAuthed(true); })
-            .catch(() => { /* Token expired/invalid — stay logged out */ })
+            .catch(() => { apiLogout(); /* Token expired/invalid — stay logged out */ })
             .finally(() => setAuthLoading(false));
     }, []);
 
@@ -314,6 +314,12 @@ export default function AdminPage() {
     // Fetch data
     const refreshData = async () => {
         setDataLoading(true);
+        const token = getToken();
+        if (!token) {
+            setDataLoading(false);
+            return;
+        }
+
         try {
             const [t, m, s] = await Promise.all([
                 getTestimonials(),
