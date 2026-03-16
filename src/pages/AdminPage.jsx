@@ -321,14 +321,21 @@ export default function AdminPage() {
         }
 
         try {
-            const [t, m, s] = await Promise.all([
-                getTestimonials(),
-                getContactMessages(),
-                getShowcases()
-            ]);
+            // Temporarily disabled: backend routes not deployed yet
+            // const [t, m, s] = await Promise.all([
+            //     getTestimonials(),
+            //     getContactMessages(),
+            //     getShowcases()
+            // ]);
+            // setTestimonials(t);
+            // setMessages(m);
+            // setShowcases(s);
+
+            // Safe: only fetch public testimonials for now
+            const t = await getTestimonials();
             setTestimonials(t);
-            setMessages(m);
-            setShowcases(s);
+            setMessages([]); // Placeholder until backend route is deployed
+            setShowcases([]); // Placeholder until backend route is deployed
         } catch (err) { console.error('Refresh fail:', err); showToast(err.message, 'error'); }
         finally { setDataLoading(false); }
     };
@@ -352,7 +359,10 @@ export default function AdminPage() {
     };
 
     const refreshMessages = () => {
-        getContactMessages().then(setMessages).catch(err => showToast(err.message, 'error'));
+        // Temporarily disabled: backend route not deployed yet
+        // getContactMessages().then(setMessages).catch(err => showToast(err.message, 'error'));
+        setMessages([]); // Placeholder until backend route is deployed
+        showToast('Messages refresh disabled - backend route not ready', 'error');
     };
 
     const toggleMessage = async (id) => {
