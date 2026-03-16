@@ -1,9 +1,11 @@
 // ─── Token helpers ───────────────────────────────────────────────────────────
 const TOKEN_KEY = 'uthsav_admin_token';
 
-export const getToken = () => localStorage.getItem(TOKEN_KEY);
-export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
-export const removeToken = () => localStorage.removeItem(TOKEN_KEY);
+// Use sessionStorage for session-based auth (clears on tab close)
+// Switch to localStorage only if "Remember Me" is implemented
+export const getToken = () => sessionStorage.getItem(TOKEN_KEY);
+export const setToken = (token) => sessionStorage.setItem(TOKEN_KEY, token);
+export const removeToken = () => sessionStorage.removeItem(TOKEN_KEY);
 
 // ─── Fetch helpers ───────────────────────────────────────────────────────────
 // Ensure the base URL is stable even if env var includes a trailing slash

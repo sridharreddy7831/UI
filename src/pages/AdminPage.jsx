@@ -187,11 +187,29 @@ export default function AdminPage() {
     const handleLogin = async (e) => {
         e.preventDefault();
         setLoginError('');
+
+        // Basic client-side validation
+        if (!email.trim()) {
+            setLoginError('Email is required');
+            return;
+        }
+        if (!password.trim()) {
+            setLoginError('Password is required');
+            return;
+        }
+        if (password.length < 6) {
+            setLoginError('Password must be at least 6 characters');
+            return;
+        }
+
         setLoginLoading(true);
         try {
             const data = await apiLogin(email, password);
             setAdmin(data.admin);
             setAuthed(true);
+            // Clear form on successful login
+            setEmail('');
+            setPassword('');
             refreshData(); // Refresh data after successful login
         } catch (err) {
             setLoginError(err.message || 'Invalid email or password');
@@ -206,6 +224,11 @@ export default function AdminPage() {
         setAdmin(null);
         setEmail('');
         setPassword('');
+        // Clear all sensitive state
+        setTestimonials([]);
+        setMessages([]);
+        setShowcases([]);
+        setTab('testimonials');
     };
 
     // ── Testimonial CRUD ───────────────────────────────────────────────────
@@ -416,32 +439,36 @@ export default function AdminPage() {
                             </div>
                             <h1 className="text-3xl font-serif text-white mb-1">Admin Login</h1>
                             <p className="text-zinc-500 text-sm font-sans">Uthsav Invites — Secure Access</p>
+                            <p className="text-zinc-600 text-xs mt-2 font-sans">🔒 This session is encrypted and secure</p>
                         </div>
 
                         <form onSubmit={handleLogin} className="space-y-4">
                             {/* Email */}
                             <div>
-                                <label className="text-xs text-zinc-400 uppercase tracking-widest mb-1.5 block">Email</label>
+                                <label htmlFor="admin-email" className="text-xs text-zinc-400 uppercase tracking-widest mb-1.5 block">Email</label>
                                 <div className="relative">
                                     <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
                                     <input
+                                        id="admin-email"
                                         type="email"
                                         value={email}
                                         onChange={e => setEmail(e.target.value)}
                                         placeholder="admin@uthsav.com"
                                         className={`${inp} pl-10`}
                                         required
-                                        autoComplete="email"
+                                        autoComplete="username"
+                                        autoFocus
                                     />
                                 </div>
                             </div>
 
                             {/* Password */}
                             <div>
-                                <label className="text-xs text-zinc-400 uppercase tracking-widest mb-1.5 block">Password</label>
+                                <label htmlFor="admin-password" className="text-xs text-zinc-400 uppercase tracking-widest mb-1.5 block">Password</label>
                                 <div className="relative">
                                     <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-500" />
                                     <input
+                                        id="admin-password"
                                         type={pwVisible ? 'text' : 'password'}
                                         value={password}
                                         onChange={e => setPassword(e.target.value)}
@@ -449,9 +476,11 @@ export default function AdminPage() {
                                         className={`${inp} pl-10 pr-12`}
                                         required
                                         autoComplete="current-password"
+                                        minLength={6}
                                     />
                                     <button type="button" onClick={() => setPwVisible(v => !v)}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors">
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white transition-colors"
+                                        aria-label={pwVisible ? 'Hide password' : 'Show password'}>
                                         {pwVisible ? <EyeOff size={16} /> : <Eye size={16} />}
                                     </button>
                                 </div>
@@ -463,6 +492,10 @@ export default function AdminPage() {
                                     <p className="text-red-400 text-sm">{loginError}</p>
                                 </div>
                             )}
+
+                            <p className="text-zinc-600 text-xs text-center mt-4">
+                                ⚠️ Multiple failed attempts may temporarily lock this account
+                            </p>
 
                             <button type="submit" disabled={loginLoading}
                                 className="w-full bg-[#D4AF37] text-zinc-950 font-bold py-3 rounded-xl hover:bg-[#c9a227] transition-colors font-sans tracking-wide flex items-center justify-center gap-2 mt-2 disabled:opacity-60">
