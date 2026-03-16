@@ -1,28 +1,36 @@
 import React, { useEffect } from 'react';
 import Lenis from '@studio-freight/lenis';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScroll({ children }) {
   useEffect(() => {
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      direction: 'vertical',
-      gestureDirection: 'vertical',
-      smooth: true,
-      smoothTouch: true, // Enable smooth scrolling on touch devices
-      touchMultiplier: 2,
+      lerp: 0.1, // Single source of truth for smoothness
       wheelMultiplier: 1,
-      lerp: 0.1, // controls the "snappiness"
+      smoothWheel: true,
+      smoothTouch: true,
+      touchMultiplier: 1.5,
+      // Normalize wheel events
+      normalizeWheel: true,
+      syncTouch: true
     });
 
-    function raf(time) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
+    // Synchronize Lenis with GSAP ScrollTrigger (CRITICAL for laptop trackpads)
+    lenis.on('scroll', ScrollTrigger.update);
 
-    requestAnimationFrame(raf);
+    // Let GSAP drive the render loop
+    gsap.ticker.add((time) => {
+      lenis.raf(time * 1000); // GSAP sends seconds, Lenis expects milliseconds
+    });
+
+    // Disable GSAP's lag smoothing to prevent fighting with Lenis
+    gsap.ticker.lagSmoothing(0);
 
     return () => {
+      gsap.ticker.remove(lenis.raf);
       lenis.destroy();
     };
   }, []);
