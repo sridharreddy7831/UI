@@ -132,3 +132,26 @@ export const updateShowcase = (id, data) =>
 
 export const deleteShowcase = (id) =>
     authFetch(`${BASE}/showcases/${id}`, { method: 'DELETE' });
+
+// ─── Categories ──────────────────────────────────────────────────────────────
+
+export const getCategories = () =>
+    publicFetch(`${BASE}/categories`);
+
+export const createCategory = (data) =>
+    authFetch(`${BASE}/categories`, {
+        method: 'POST',
+        body: JSON.stringify(data),
+    });
+
+export const updateCategory = (id, data) =>
+    authFetch(`${BASE}/categories/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(data),
+    });
+
+export const deleteCategory = (id) =>
+    authFetch(`${BASE}/categories/${id}`, { method: 'DELETE' });
+
+export const seedCategories = () =>
+    authFetch(`${BASE}/categories/seed`, { method: 'POST' });

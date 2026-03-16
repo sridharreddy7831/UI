@@ -19,8 +19,9 @@ function HoverFooter() {
             links: [
                 { label: "Home", href: "/#home" },
                 { label: "About Us", href: "/#about" },
-                { label: "Gallery", href: "/#portfolio" },
-                { label: "Process", href: "/#how-it-works" },
+                { label: "Portfolio", href: "/portfolio" },
+                { label: "Testimonials", href: "/testimonials" },
+                { label: "Contact Us", href: "/#contact" },
             ],
         },
         {
@@ -153,8 +154,8 @@ function HoverFooter() {
             </div>
 
             {/* Interactive Text hover effect */}
-            <div className="lg:flex hidden h-[24rem] -mt-40 -mb-20">
-                <TextHoverEffect text="UTHSAV" className="z-50" />
+            <div className="w-full flex justify-center items-center h-[12rem] md:h-[18rem] lg:h-[24rem] -mt-10 md:-mt-20 lg:-mt-40 -mb-10 md:-mb-16 lg:-mb-20 overflow-hidden relative z-10 pointer-events-auto">
+                <TextHoverEffect text="UTHSAV" className="w-full h-full min-w-[300px]" />
             </div>
 
             <FooterBackgroundGradient />

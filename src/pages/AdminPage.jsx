@@ -3,7 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users, MessageSquare, Plus, Trash2, Edit3, Save, X,
     Star, LogIn, LogOut, Eye, EyeOff, RefreshCw, ChevronDown,
-    Loader2, Lock, Mail, ShieldCheck, KeyRound
+    Loader2, Lock, Mail, ShieldCheck, KeyRound,
+    Image as ImageIcon, ExternalLink, Filter, FolderOpen
 } from 'lucide-react';
 import {
     login as apiLogin, logout as apiLogout, getMe,
@@ -11,9 +12,9 @@ import {
     deleteTestimonial, resetTestimonials,
     getContactMessages, deleteContactMessage, clearAllMessages, markMessageRead,
     changePassword as apiChangePassword, getToken,
-    getShowcases, createShowcase, updateShowcase, deleteShowcase
+    getShowcases, createShowcase, updateShowcase, deleteShowcase,
+    getCategories, createCategory, updateCategory, deleteCategory, seedCategories
 } from '../lib/data';
-import { Image as ImageIcon, ExternalLink, Filter } from 'lucide-react';
 
 // ── Star Rating Input ────────────────────────────────────────────────────────
 const StarInput = ({ value, onChange }) => (
@@ -160,6 +161,10 @@ export default function AdminPage() {
     const [form, setForm] = useState(emptyForm());
     const [saved, setSaved] = useState(false);
     const [expandedMsg, setExpandedMsg] = useState(null);
+    // Categories state
+    const [apiCategories, setApiCategories] = useState([]);
+    const [catForm, setCatForm] = useState({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '' });
+    const [editingCat, setEditingCat] = useState(null);
     const [toast, setToast] = useState(null); // { message, type }
 
     const showToast = (message, type = 'success') => {
@@ -325,14 +330,51 @@ export default function AdminPage() {
         setTab('showcases-form');
     };
 
-    const categories = [
-        { id: 'wedding-invitations', label: 'Wedding' },
-        { id: 'housewarming-invitations', label: 'Housewarming' },
-        { id: 'birthday-invitations', label: 'Birthday' },
-        { id: 'baby-shower-invitations', label: 'Baby Shower' },
-        { id: 'engagement-invitations', label: 'Engagement' },
-        { id: 'naming-ceremony', label: 'Naming Ceremony' }
-    ];
+    // Derive showcase category list from API categories or fallback
+    const categories = apiCategories.length > 0
+        ? apiCategories.map(c => ({ id: c.slug, label: c.title.replace(' Invitations', '').replace(' Ceremony', '') }))
+        : [
+            { id: 'wedding-invitations', label: 'Wedding' },
+            { id: 'housewarming-invitations', label: 'Housewarming' },
+            { id: 'birthday-invitations', label: 'Birthday' },
+            { id: 'baby-shower-invitations', label: 'Baby Shower' },
+            { id: 'engagement-invitations', label: 'Engagement' },
+            { id: 'naming-ceremony', label: 'Naming Ceremony' }
+        ];
+
+    // ── Category CRUD ───────────────────────────────────────────────────
+    const saveCategoryFn = async () => {
+        if (!catForm.title || !catForm.slug) return showToast('Title and slug are required', 'error');
+        try {
+            if (editingCat) {
+                await updateCategory(editingCat, catForm);
+                showToast('Category updated!');
+            } else {
+                await createCategory(catForm);
+                showToast('Category created!');
+            }
+            setCatForm({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '' });
+            setEditingCat(null);
+            refreshData();
+        } catch (err) { showToast(err.message, 'error'); }
+    };
+
+    const deleteCategoryFn = async (id) => {
+        if (!confirm('Delete this category? Showcases under it will NOT be deleted.')) return;
+        try {
+            await deleteCategory(id);
+            showToast('Category deleted');
+            refreshData();
+        } catch (err) { showToast(err.message, 'error'); }
+    };
+
+    const seedCategoriesFn = async () => {
+        try {
+            await seedCategories();
+            showToast('Default categories seeded!');
+            refreshData();
+        } catch (err) { showToast(err.message, 'error'); }
+    };
 
     // Fetch data
     const refreshData = async () => {
@@ -344,21 +386,16 @@ export default function AdminPage() {
         }
 
         try {
-            // Temporarily disabled: backend routes not deployed yet
-            // const [t, m, s] = await Promise.all([
-            //     getTestimonials(),
-            //     getContactMessages(),
-            //     getShowcases()
-            // ]);
-            // setTestimonials(t);
-            // setMessages(m);
-            // setShowcases(s);
-
-            // Safe: only fetch public testimonials for now
-            const t = await getTestimonials();
+            const [t, m, s, cats] = await Promise.all([
+                getTestimonials(),
+                getContactMessages().catch(() => []),
+                getShowcases().catch(() => []),
+                getCategories().catch(() => []),
+            ]);
             setTestimonials(t);
-            setMessages([]); // Placeholder until backend route is deployed
-            setShowcases([]); // Placeholder until backend route is deployed
+            setMessages(m);
+            setShowcases(s);
+            setApiCategories(cats);
         } catch (err) { console.error('Refresh fail:', err); showToast(err.message, 'error'); }
         finally { setDataLoading(false); }
     };
@@ -382,10 +419,10 @@ export default function AdminPage() {
     };
 
     const refreshMessages = () => {
-        // Temporarily disabled: backend route not deployed yet
-        // getContactMessages().then(setMessages).catch(err => showToast(err.message, 'error'));
-        setMessages([]); // Placeholder until backend route is deployed
-        showToast('Messages refresh disabled - backend route not ready', 'error');
+        getContactMessages().then((data) => {
+            setMessages(data);
+            showToast('Messages refreshed', 'success');
+        }).catch(err => showToast(err.message, 'error'));
     };
 
     const toggleMessage = async (id) => {
@@ -605,6 +642,15 @@ export default function AdminPage() {
                             </div>
                         </div>
                     </div>
+                    <div className="bg-zinc-900 border border-white/5 rounded-2xl p-5 flex items-center gap-4">
+                        <div className="w-12 h-12 bg-emerald-500/10 border border-emerald-500/20 rounded-xl flex items-center justify-center">
+                            <FolderOpen size={22} className="text-emerald-400" />
+                        </div>
+                        <div>
+                            <div className="text-2xl font-bold font-serif">{apiCategories.length}</div>
+                            <div className="text-xs text-zinc-500 uppercase tracking-widest">Categories</div>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Tabs */}
@@ -612,6 +658,7 @@ export default function AdminPage() {
                     {[
                         { id: 'testimonials', label: 'Testimonials', icon: Star },
                         { id: 'showcases', label: 'Live Showcases', icon: ImageIcon },
+                        { id: 'categories', label: 'Categories', icon: FolderOpen },
                         { id: 'messages', label: 'Inquiries', icon: MessageSquare, count: messages.filter(m => !m.read).length }
                     ].map(({ id, label, icon: Icon, count }) => (
                         <button
@@ -926,6 +973,178 @@ export default function AdminPage() {
                         </form>
                     </div>
                 )}
+                {/* ═══ CATEGORIES TAB ═══ */}
+                {!dataLoading && tab === 'categories' && (
+                    <div>
+                        <div className="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 className="text-2xl font-serif">Categories Management</h2>
+                                <p className="text-zinc-500 text-sm mt-1">Add, edit, or remove invitation categories.</p>
+                            </div>
+                            <div className="flex gap-2">
+                                {apiCategories.length === 0 && (
+                                    <button onClick={seedCategoriesFn} className="px-4 py-2 bg-zinc-800 text-zinc-300 rounded-xl hover:bg-zinc-700 hover:text-white transition-all text-sm font-medium">
+                                        Seed Defaults
+                                    </button>
+                                )}
+                                <button onClick={() => {
+                                    setEditingCat(null);
+                                    setCatForm({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '' });
+                                    setTab('categories-form');
+                                }} className="flex items-center gap-2 px-4 py-2 bg-[#D4AF37] text-zinc-950 font-bold rounded-xl hover:bg-[#c9a227] transition-all text-sm">
+                                    <Plus size={16} /> Add Category
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {apiCategories.map(cat => (
+                                <motion.div key={cat._id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-zinc-900 border border-white/5 rounded-2xl overflow-hidden group hover:border-[#D4AF37]/30 transition-all">
+                                    <div className="aspect-video relative overflow-hidden bg-zinc-800">
+                                        {cat.image ? (
+                                            <img src={cat.image} alt={cat.title} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
+                                        ) : (
+                                            <div className="flex items-center justify-center h-full text-zinc-700"><ImageIcon size={48} /></div>
+                                        )}
+                                        <div className="absolute top-2 right-2 flex gap-1 transform translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
+                                            <button onClick={() => {
+                                                setEditingCat(cat._id);
+                                                setCatForm(cat);
+                                                setTab('categories-form');
+                                            }} className="p-2 bg-zinc-900/80 backdrop-blur-sm rounded-lg text-white hover:text-[#D4AF37]"><Edit3 size={14} /></button>
+                                            <button onClick={() => deleteCategoryFn(cat._id)} className="p-2 bg-red-500/80 backdrop-blur-sm rounded-lg text-white hover:bg-red-500"><Trash2 size={14} /></button>
+                                        </div>
+                                    </div>
+                                    <div className="p-5">
+                                        <h4 className="font-serif text-white text-lg mb-1">{cat.title}</h4>
+                                        <div className="text-[10px] text-[#D4AF37] font-mono mb-3 bg-[#D4AF37]/10 px-2 py-0.5 rounded-full inline-block">
+                                            /{cat.slug}
+                                        </div>
+                                        <p className="text-zinc-500 text-xs line-clamp-2">{cat.description || cat.subtitle}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                            {apiCategories.length === 0 && (
+                                <div className="col-span-full py-20 text-center border-2 border-dashed border-white/5 rounded-3xl bg-zinc-900/50">
+                                    <FolderOpen className="mx-auto mb-4 text-zinc-600" size={40} />
+                                    <p className="text-zinc-400 font-serif mb-2">No categories found.</p>
+                                    <p className="text-zinc-600 text-sm">Seed defaults or create a new one to get started.</p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Categories Form */}
+                {!dataLoading && tab === 'categories-form' && (
+                    <div className="max-w-3xl mx-auto bg-zinc-950 border border-white/10 rounded-3xl p-8">
+                        <div className="flex justify-between items-center mb-8">
+                            <h3 className="text-2xl font-serif text-white">{editingCat ? 'Edit Category' : 'Create Category'}</h3>
+                            <button onClick={() => setTab('categories')} className="p-2 text-zinc-500 hover:text-white transition-colors"><X size={20} /></button>
+                        </div>
+                        
+                        <div className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Category Title *</label>
+                                    <input
+                                        type="text"
+                                        value={catForm.title}
+                                        onChange={e => {
+                                            const title = e.target.value;
+                                            // Auto-generate slug if we're not editing an existing one
+                                            if (!editingCat) {
+                                                const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+                                                setCatForm({ ...catForm, title, slug });
+                                            } else {
+                                                setCatForm({ ...catForm, title });
+                                            }
+                                        }}
+                                        placeholder="e.g. Wedding Invitations"
+                                        className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">URL Slug *</label>
+                                    <input
+                                        type="text"
+                                        value={catForm.slug}
+                                        onChange={e => setCatForm({ ...catForm, slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '') })}
+                                        placeholder="e.g. wedding-invitations"
+                                        className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700 font-mono text-sm"
+                                        required
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Thumbnail Image URL *</label>
+                                    <input
+                                        type="url"
+                                        value={catForm.image}
+                                        onChange={e => setCatForm({ ...catForm, image: e.target.value })}
+                                        placeholder="https://images.unsplash.com/..."
+                                        className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                                        required
+                                    />
+                                    <p className="text-[10px] text-zinc-500 mt-2">Provides the image for the portfolio grid.</p>
+                                </div>
+                                <div>
+                                    <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Hero Image URL</label>
+                                    <input
+                                        type="url"
+                                        value={catForm.heroImage}
+                                        onChange={e => setCatForm({ ...catForm, heroImage: e.target.value })}
+                                        placeholder="https://images.unsplash.com/... (Optional)"
+                                        className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                                    />
+                                    <p className="text-[10px] text-zinc-500 mt-2">Large backdrop for the collection's landing page.</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Subtitle / Short description</label>
+                                <input
+                                    type="text"
+                                    value={catForm.subtitle}
+                                    onChange={e => setCatForm({ ...catForm, subtitle: e.target.value })}
+                                    placeholder="e.g. Eternal Bonds, Divine Designs"
+                                    className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Full Description</label>
+                                <textarea
+                                    value={catForm.description}
+                                    onChange={e => setCatForm({ ...catForm, description: e.target.value })}
+                                    rows={4}
+                                    placeholder="Describe this category of invitations..."
+                                    className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700 resize-none"
+                                />
+                            </div>
+
+                            <div className="pt-6 flex gap-4 border-t border-white/5">
+                                <button
+                                    type="button"
+                                    onClick={saveCategoryFn}
+                                    className="flex-1 bg-[#D4AF37] text-zinc-950 font-bold py-3 rounded-xl hover:bg-[#c9a227] transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Save size={18} /> {editingCat ? 'Save Changes' : 'Create Category'}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setTab('categories')}
+                                    className="flex-1 bg-zinc-900 text-white font-bold py-3 rounded-xl hover:bg-zinc-800 transition-all"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* ═══ MESSAGES TAB ═══ */}
                 {!dataLoading && tab === 'messages' && (
@@ -965,6 +1184,7 @@ export default function AdminPage() {
                                             <div className="flex items-center gap-3 flex-wrap mb-1">
                                                 <span className="font-semibold">{msg.name}</span>
                                                 {!msg.read && <span className="text-[10px] bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/20 px-2 py-0.5 rounded-full uppercase tracking-widest">New</span>}
+                                                {msg.email && <span className="text-xs text-zinc-500">{msg.email}</span>}
                                                 <span className="text-xs text-zinc-500">{msg.phone}</span>
                                                 {msg.eventType && <span className="text-xs bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded-full capitalize">{msg.eventType}</span>}
                                                 {msg.eventDate && <span className="text-xs bg-zinc-800 text-zinc-400 px-2 py-0.5 rounded-full">

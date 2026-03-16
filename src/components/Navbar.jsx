@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { AnimeNavBar } from './ui/anime-navbar';
-import { Home, Info, Grid, Scale, Briefcase, Mail, CreditCard } from 'lucide-react';
+import { Home, Info, Grid, Star, Briefcase, Mail, CreditCard } from 'lucide-react';
 
 const navItems = [
     { name: "Home", url: "/#home", icon: Home, section: "home" },
     { name: "About", url: "/#about", icon: Info, section: "about" },
-    { name: "Collections", url: "/#categories", icon: Grid, section: "categories" },
-    { name: "Compare", url: "/#comparison", icon: Scale, section: "comparison" },
+    { name: "Portfolio", url: "/portfolio", icon: Grid, section: "" },
+    { name: "Testimonials", url: "/testimonials", icon: Star, section: "" },
     { name: "Pricing", url: "/#pricing", icon: CreditCard, section: "pricing" },
-    { name: "Process", url: "/#how-it-works", icon: Briefcase, section: "how-it-works" },
     { name: "Contact", url: "/#contact", icon: Mail, section: "contact" },
 ];
 

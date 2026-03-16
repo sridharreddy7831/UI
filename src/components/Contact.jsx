@@ -9,7 +9,7 @@ const Contact = () => {
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
     const [form, setForm] = useState({
-        name: '', phone: '', eventType: '', eventDate: '', message: ''
+        name: '', email: '', phone: '', eventType: '', eventDate: '', message: ''
     });
 
     const inputClasses = "w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white font-sans placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-transparent transition-all duration-300 backdrop-blur-md";
@@ -20,12 +20,12 @@ const Contact = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!form.name || !form.phone) return;
+        if (!form.name || !form.phone || !form.email) return;
         setLoading(true);
         try {
             await createContactMessage(form);
             setSubmitted(true);
-            setForm({ name: '', phone: '', eventType: '', eventDate: '', message: '' });
+            setForm({ name: '', email: '', phone: '', eventType: '', eventDate: '', message: '' });
             setTimeout(() => setSubmitted(false), 5000);
         } catch (err) {
             console.error('Failed to submit:', err);
@@ -117,10 +117,14 @@ const Contact = () => {
                             </div>
                         ) : (
                             <form className="space-y-6" onSubmit={handleSubmit}>
-                                <div className="grid md:grid-cols-2 gap-6">
+                                <div className="grid md:grid-cols-3 gap-6">
                                     <div>
                                         <label className="block text-sm font-medium text-white mb-2">Name <span className="text-[#D4AF37]">*</span></label>
                                         <input name="name" type="text" value={form.name} onChange={handleChange} placeholder="Your full name" className={inputClasses} required />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-medium text-white mb-2">Email <span className="text-[#D4AF37]">*</span></label>
+                                        <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Your email address" className={inputClasses} required />
                                     </div>
                                     <div>
                                         <label className="block text-sm font-medium text-white mb-2">Phone <span className="text-[#D4AF37]">*</span></label>

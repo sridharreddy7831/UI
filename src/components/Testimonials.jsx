@@ -125,7 +125,7 @@ const Testimonials = () => {
                             >
                                 {testimonials.map((testimonial, index) => (
                                     <CardTransformed
-                                        key={testimonial.id}
+                                        key={testimonial._id || index}
                                         arrayLength={testimonials.length}
                                         index={index}
                                         variant="gold"

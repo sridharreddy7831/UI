@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { motion, useInView } from "motion/react";
 import { cn } from "../../lib/utils";
 
 export const TextHoverEffect = ({
@@ -12,6 +12,9 @@ export const TextHoverEffect = ({
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const [hovered, setHovered] = useState(false);
   const [maskPosition, setMaskPosition] = useState({ cx: "50%", cy: "50%" });
+
+  // Only trigger the draw animation when the SVG scrolls into view
+  const isInView = useInView(svgRef, { once: true, margin: "-50px" });
 
   useEffect(() => {
     if (svgRef.current && cursor.x !== null && cursor.y !== null) {
@@ -35,7 +38,17 @@ export const TextHoverEffect = ({
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onMouseMove={(e) => setCursor({ x: e.clientX, y: e.clientY })}
-      className={cn("select-none uppercase cursor-pointer", className)}
+      onTouchStart={(e) => {
+        setHovered(true);
+        const touch = e.touches[0];
+        setCursor({ x: touch.clientX, y: touch.clientY });
+      }}
+      onTouchMove={(e) => {
+        const touch = e.touches[0];
+        setCursor({ x: touch.clientX, y: touch.clientY });
+      }}
+      onTouchEnd={() => setHovered(false)}
+      className={cn("select-none uppercase cursor-pointer touch-none", className)}
     >
       <defs>
         <linearGradient
@@ -86,23 +99,34 @@ export const TextHoverEffect = ({
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        className="fill-transparent stroke-neutral-200 font-[helvetica] text-7xl font-bold dark:stroke-neutral-800"
+        fill="transparent"
+        stroke="rgba(255,255,255,0.15)"
+        fontSize="72"
+        fontFamily="Helvetica, Arial, sans-serif"
+        fontWeight="bold"
         style={{ opacity: hovered ? 0.7 : 0, transition: "opacity 0.3s" }}
       >
         {text}
       </text>
 
-      {/* Animated stroke draw-on effect */}
+      {/* Animated stroke draw-on effect — triggers when scrolled into view */}
       <motion.text
         x="50%"
         y="50%"
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        className="fill-transparent stroke-[#D4AF37] font-[helvetica] text-7xl font-bold dark:stroke-[#D4AF3799]"
+        fill="transparent"
+        stroke="#D4AF37"
+        fontSize="72"
+        fontFamily="Helvetica, Arial, sans-serif"
+        fontWeight="bold"
         initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
-        animate={{
+        animate={isInView ? {
           strokeDashoffset: 0,
+          strokeDasharray: 1000,
+        } : {
+          strokeDashoffset: 1000,
           strokeDasharray: 1000,
         }}
         transition={{
@@ -122,7 +146,10 @@ export const TextHoverEffect = ({
         stroke="url(#textGradient)"
         strokeWidth="0.3"
         mask="url(#textMask)"
-        className="fill-transparent font-[helvetica] text-7xl font-bold"
+        fill="transparent"
+        fontSize="72"
+        fontFamily="Helvetica, Arial, sans-serif"
+        fontWeight="bold"
       >
         {text}
       </text>
