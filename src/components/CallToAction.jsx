@@ -44,15 +44,15 @@ const CallToAction = () => {
     const isInView = useInView(ref, { once: true, margin: "-100px" });
 
     return (
-        <section className="relative py-32 bg-zinc-950 text-white overflow-hidden border-t border-white/5" ref={ref}>
+        <section className="relative py-32 bg-gradient-to-br from-[#FFF8F2] via-[#F8D7E8]/20 to-[#D9C2F0]/10 text-gray-900 overflow-hidden border-t border-[#D4AF37]/30" ref={ref}>
             {/* Background Decor */}
-            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-zinc-900 rounded-full mix-blend-screen filter blur-[120px] opacity-30 translate-x-1/2 -translate-y-1/2 pointer-events-none" />
-            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#D4AF37]/20 rounded-full mix-blend-screen filter blur-[100px] opacity-20 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#D4AF37]/10 rounded-full mix-blend-screen filter blur-[120px] opacity-20 translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#D4AF37]/15 rounded-full mix-blend-screen filter blur-[100px] opacity-15 -translate-x-1/3 translate-y-1/3 pointer-events-none" />
 
             <Particles />
 
             <div className="container mx-auto px-6 md:px-12 relative z-10">
-                <div className="max-w-4xl mx-auto text-center border border-white/10 bg-white/5 backdrop-blur-xl p-10 md:p-20 rounded-3xl shadow-2xl relative overflow-hidden group hover:border-white/20 hover:bg-white/10 transition-all duration-500">
+                <div className="max-w-4xl mx-auto text-center border border-[#D4AF37]/40 bg-white/40 backdrop-blur-xl p-10 md:p-20 rounded-3xl shadow-lg relative overflow-hidden group hover:border-[#D4AF37]/60 hover:bg-white/50 transition-all duration-500">
 
                     <div className="absolute inset-0 bg-gradient-to-tr from-[#D4AF37]/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
@@ -75,7 +75,7 @@ const CallToAction = () => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                         transition={{ duration: 0.8, delay: 0.1 }}
-                        className="text-4xl md:text-6xl font-serif leading-tight mb-8 text-white"
+                        className="text-4xl md:text-6xl font-serif leading-tight mb-8 text-[#4A2E2A]"
                     >
                         Make Your Celebration Special With <span className="text-[#D4AF37] italic">Beautiful Invitations</span>
                     </motion.h2>
@@ -84,7 +84,7 @@ const CallToAction = () => {
                         initial={{ opacity: 0, y: 30 }}
                         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                         transition={{ duration: 0.8, delay: 0.2 }}
-                        className="text-zinc-400 text-lg md:text-xl font-sans max-w-2xl mx-auto mb-12"
+                        className="text-gray-700 text-lg md:text-xl font-sans max-w-2xl mx-auto mb-12"
                     >
                         Order a custom invitation design today and let us help you create a lasting first impression for your guests.
                     </motion.p>

@@ -62,8 +62,8 @@ export default function About() {
     },
     {
       icon: Sparkles,
-      title: "3D Visuals",
-      description: "Premium typography, fluid animations, and luxurious finishes.",
+      title: "Premium Quality",
+      description: "Beautiful typography, fluid animations, and luxurious finishing touches.",
     },
     {
       icon: Clock,

@@ -87,7 +87,7 @@ function DesktopNavBar({ items, activeTab, setActiveTab, hoveredTab, setHoveredT
     return (
         <div className="fixed top-0 left-0 right-0 z-[9999] flex justify-end pr-6 pt-16 pointer-events-none">
             <motion.div
-                className="flex items-center gap-1 bg-zinc-950/80 border border-white/10 backdrop-blur-xl py-2 px-2 rounded-full shadow-xl shadow-black/50 font-sans pointer-events-auto"
+                className="flex items-center gap-1 bg-white/70 border border-[#D4AF37]/20 backdrop-blur-xl py-2 px-2 rounded-full shadow-xl font-sans pointer-events-auto"
                 initial={{ y: -60, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
@@ -115,8 +115,8 @@ function DesktopNavBar({ items, activeTab, setActiveTab, hoveredTab, setHoveredT
                                 onMouseLeave={() => setHoveredTab(null)}
                                 className={cn(
                                     "relative cursor-pointer text-sm font-semibold px-5 py-2.5 rounded-full transition-all duration-300 flex items-center justify-center gap-2",
-                                    "text-zinc-400 hover:text-white",
-                                    isActive && "text-white"
+                                    "text-gray-700 hover:text-[#D4AF37]",
+                                    isActive && "text-[#D4AF37]"
                                 )}
                             >
                                 {isActive && (

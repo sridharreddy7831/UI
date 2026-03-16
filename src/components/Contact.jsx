@@ -12,7 +12,7 @@ const Contact = () => {
         name: '', email: '', phone: '', eventType: '', eventDate: '', message: ''
     });
 
-    const inputClasses = "w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3 text-white font-sans placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-[#D4AF37]/50 focus:border-transparent transition-all duration-300 backdrop-blur-md";
+    const inputClasses = "w-full bg-white/40 border border-[#D4AF37]/30 rounded-lg px-5 py-3 text-[#4A2E2A] font-light placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:border-transparent transition-all duration-300";
 
     const handleChange = (e) => {
         setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -35,68 +35,79 @@ const Contact = () => {
         }
     };
 
-
     return (
-        <section className="py-24 bg-zinc-950 relative overflow-hidden border-t border-white/5" id="contact" ref={ref}>
-            {/* Soft background glow */}
-            <div className="absolute left-0 top-1/2 w-[600px] h-[600px] bg-[#D4AF37] rounded-full filter blur-[100px] opacity-10 -translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+        <section className="py-28 relative overflow-hidden" id="contact" ref={ref} style={{
+            background: 'linear-gradient(135deg, rgba(217, 194, 240, 0.25) 0%, rgba(248, 215, 232, 0.25) 50%, rgba(253, 230, 220, 0.25) 100%)'
+        }}>
+            {/* Decorative elements */}
+            <div className="absolute right-0 top-1/2 w-96 h-96 rounded-full opacity-8 pointer-events-none -translate-y-1/2" style={{
+                background: 'radial-gradient(circle, #D4AF37 0%, transparent 70%)'
+            }} />
 
             <div className="container mx-auto px-6 md:px-12 relative z-10">
-                <div className="grid lg:grid-cols-5 gap-16">
+                <div className="grid lg:grid-cols-5 gap-12">
 
                     {/* Contact Info (Left) */}
-                    <div className="lg:col-span-2 flex flex-col justify-center font-sans">
+                    <div className="lg:col-span-2 flex flex-col justify-center">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                            className="mb-6"
+                        >
+                            <span className="text-[#D4AF37] text-sm font-medium tracking-widest">GET IN TOUCH</span>
+                        </motion.div>
+
                         <motion.h2
                             initial={{ opacity: 0, x: -30 }}
                             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
                             transition={{ duration: 0.8 }}
-                            className="text-4xl md:text-5xl font-serif text-white mb-6"
+                            className="text-4xl md:text-5xl font-serif text-[#4A2E2A] mb-6"
                         >
-                            Let's Create <span className="text-[#D4AF37] italic">Something Beautiful</span>
+                            Let's Create <span className="text-[#D4AF37]">Something Beautiful</span>
                         </motion.h2>
 
                         <motion.p
                             initial={{ opacity: 0, x: -30 }}
                             animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
                             transition={{ duration: 0.8, delay: 0.1 }}
-                            className="text-zinc-400 text-lg mb-12"
+                            className="text-gray-700 text-lg font-light mb-12"
                         >
-                            Reach out to us to start discussing your premium digital invitation. We'll guide you through every step of the process.
+                            Reach out to us to start your premium digital invitation journey. We'll guide you through every step.
                         </motion.p>
 
                         <motion.div
                             initial={{ opacity: 0, y: 30 }}
                             animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
                             transition={{ duration: 0.8, delay: 0.2 }}
-                            className="space-y-6"
+                            className="space-y-5"
                         >
-                            <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 shadow-sm hover:shadow-md hover:border-white/30 transition-all backdrop-blur-md">
-                                <div className="w-12 h-12 bg-white/5 flex items-center justify-center rounded-full text-[#D4AF37] border border-white/10">
-                                    <Mail size={24} />
+                            <div className="flex items-center gap-4 p-4 rounded-xl border border-[#D4AF37]/20 bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all">
+                                <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#B68A2E] flex items-center justify-center rounded-full text-white">
+                                    <Mail size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Email Us</p>
-                                    <p className="font-serif text-lg text-white">uthsavinvites@gmail.com</p>
+                                    <p className="text-xs font-medium text-[#D4AF37] uppercase tracking-widest">Email</p>
+                                    <p className="font-light text-[#4A2E2A]">uthsavinvites@gmail.com</p>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 shadow-sm hover:shadow-md hover:border-white/30 transition-all backdrop-blur-md">
-                                <div className="w-12 h-12 bg-white/5 flex items-center justify-center rounded-full text-[#D4AF37] border border-white/10">
-                                    <Phone size={24} />
+                            <div className="flex items-center gap-4 p-4 rounded-xl border border-[#D4AF37]/20 bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all">
+                                <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#B68A2E] flex items-center justify-center rounded-full text-white">
+                                    <Phone size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Call Us</p>
-                                    <p className="font-serif text-lg text-white">+91 7386376302</p>
+                                    <p className="text-xs font-medium text-[#D4AF37] uppercase tracking-widest">Call</p>
+                                    <p className="font-light text-[#4A2E2A]">+91 7386376302</p>
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 bg-white/5 p-4 rounded-xl border border-white/10 shadow-sm hover:shadow-md hover:border-white/30 transition-all backdrop-blur-md">
-                                <div className="w-12 h-12 bg-white/5 flex items-center justify-center rounded-full text-[#D4AF37] border border-white/10">
-                                    <MapPin size={24} />
+                            <div className="flex items-center gap-4 p-4 rounded-xl border border-[#D4AF37]/20 bg-white/30 backdrop-blur-sm hover:bg-white/40 transition-all">
+                                <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37] to-[#B68A2E] flex items-center justify-center rounded-full text-white">
+                                    <MapPin size={20} />
                                 </div>
                                 <div>
-                                    <p className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">Studio</p>
-                                    <p className="font-serif text-lg text-white">Hyderabad, India</p>
+                                    <p className="text-xs font-medium text-[#D4AF37] uppercase tracking-widest">Studio</p>
+                                    <p className="font-light text-[#4A2E2A]">Hyderabad, India</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -107,36 +118,36 @@ const Contact = () => {
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.8, delay: 0.3 }}
-                        className="lg:col-span-3 bg-white/5 backdrop-blur-2xl p-8 md:p-12 rounded-3xl shadow-2xl border border-white/10"
+                        className="lg:col-span-3 premium-card premium-card-lavender"
                     >
                         {submitted ? (
                             <div className="h-full flex flex-col items-center justify-center text-center py-12 gap-4">
                                 <CheckCircle size={56} className="text-[#D4AF37]" />
-                                <h3 className="text-2xl font-serif text-white">Inquiry Sent!</h3>
-                                <p className="text-zinc-400 font-sans max-w-xs">Thank you! We've received your message and will reach out to you shortly.</p>
+                                <h3 className="text-2xl font-serif text-[#4A2E2A]">Inquiry Sent!</h3>
+                                <p className="text-gray-700 font-light max-w-xs">Thank you! We've received your message and will reach out to you shortly.</p>
                             </div>
                         ) : (
                             <form className="space-y-6" onSubmit={handleSubmit}>
                                 <div className="grid md:grid-cols-3 gap-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-white mb-2">Name <span className="text-[#D4AF37]">*</span></label>
+                                        <label className="block text-sm font-medium text-[#4A2E2A] mb-2">Name <span className="text-[#D4AF37]">*</span></label>
                                         <input name="name" type="text" value={form.name} onChange={handleChange} placeholder="Your full name" className={inputClasses} required />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-white mb-2">Email <span className="text-[#D4AF37]">*</span></label>
-                                        <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Your email address" className={inputClasses} required />
+                                        <label className="block text-sm font-medium text-[#4A2E2A] mb-2">Email <span className="text-[#D4AF37]">*</span></label>
+                                        <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="your@email.com" className={inputClasses} required />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-white mb-2">Phone <span className="text-[#D4AF37]">*</span></label>
-                                        <input name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="Your phone number" className={inputClasses} required />
+                                        <label className="block text-sm font-medium text-[#4A2E2A] mb-2">Phone <span className="text-[#D4AF37]">*</span></label>
+                                        <input name="phone" type="tel" value={form.phone} onChange={handleChange} placeholder="+91 XXXXXXXXXX" className={inputClasses} required />
                                     </div>
                                 </div>
 
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-sm font-medium text-white mb-2">Event Type</label>
-                                        <select name="eventType" value={form.eventType} onChange={handleChange} className={`${inputClasses} appearance-none bg-zinc-900 border-white/10`}>
-                                            <option value="">Select Event</option>
+                                        <label className="block text-sm font-medium text-[#4A2E2A] mb-2">Event Type</label>
+                                        <select name="eventType" value={form.eventType} onChange={handleChange} className={`${inputClasses} appearance-none cursor-pointer`}>
+                                            <option value="">Select your event</option>
                                             <option value="wedding">Wedding</option>
                                             <option value="housewarming">Housewarming</option>
                                             <option value="birthday">Birthday</option>
@@ -146,13 +157,13 @@ const Contact = () => {
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-white mb-2">Event Date</label>
-                                        <input name="eventDate" type="date" value={form.eventDate} onChange={handleChange} className={`${inputClasses} [&::-webkit-calendar-picker-indicator]:filter-invert`} />
+                                        <label className="block text-sm font-medium text-[#4A2E2A] mb-2">Event Date</label>
+                                        <input name="eventDate" type="date" value={form.eventDate} onChange={handleChange} className={inputClasses} />
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-medium text-white mb-2">Message</label>
+                                    <label className="block text-sm font-medium text-[#4A2E2A] mb-2">Message</label>
                                     <textarea
                                         name="message"
                                         rows="4"
@@ -166,16 +177,13 @@ const Contact = () => {
                                 <button
                                     type="submit"
                                     disabled={loading}
-                                    className="w-full relative group bg-white/5 border border-white/10 text-white rounded-xl py-4 font-bold text-lg overflow-hidden shadow-lg hover:border-[#D4AF37]/50 hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-md disabled:opacity-60 disabled:cursor-not-allowed"
+                                    className="btn-gold-primary w-full flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
                                 >
-                                    <span className="relative z-10 flex items-center gap-2 font-sans tracking-wide">
-                                        {loading ? (
-                                            <><Loader2 size={20} className="animate-spin" /> Sending...</>
-                                        ) : (
-                                            <>Send Inquiry <Send size={20} className="group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform group-hover:text-[#D4AF37]" /></>
-                                        )}
-                                    </span>
-                                    <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl" />
+                                    {loading ? (
+                                        <><Loader2 size={20} className="animate-spin" /> Sending...</>
+                                    ) : (
+                                        <>Send Inquiry <Send size={20} className="transition-transform" /></>
+                                    )}
                                 </button>
                             </form>
                         )}

@@ -42,7 +42,7 @@ function HomePage() {
         {loaded && (
           <motion.div
             key="main"
-            className="bg-zinc-950 text-white font-sans overflow-x-clip"
+            className="bg-ivory text-gray-900 font-sans overflow-x-clip"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, ease: 'easeOut' }}

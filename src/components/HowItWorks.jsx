@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { MousePointerClick, FileText, PenTool, Send } from 'lucide-react';
@@ -46,18 +47,29 @@ const HowItWorks = () => {
 
     return (
         <section
-            className="bg-zinc-950 overflow-hidden relative border-t border-white/5"
+            className="overflow-hidden relative"
             id="how-it-works"
             ref={containerRef}
+            style={{
+                background: 'linear-gradient(135deg, rgba(253, 230, 220, 0.3) 0%, rgba(255, 248, 242, 0.5) 100%)'
+            }}
         >
             <div className="py-24 md:py-32 lg:h-screen lg:flex lg:flex-col lg:justify-center relative z-10">
 
                 <div className="container mx-auto px-6 md:px-12 mb-16 lg:mb-24">
-                    <h2 className="text-4xl md:text-5xl font-serif text-white mb-4 text-center lg:text-left">
-                        How It <span className="text-[#D4AF37] italic">Works</span>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="inline-block mb-6"
+                    >
+                        <span className="text-[#D4AF37] text-sm font-medium tracking-widest">SIMPLE PROCESS</span>
+                    </motion.div>
+                    <h2 className="text-4xl md:text-5xl font-serif text-[#4A2E2A] mb-4">
+                        How It <span className="text-[#D4AF37]">Works</span>
                     </h2>
-                    <p className="text-zinc-400 text-lg max-w-2xl text-center lg:text-left font-sans">
-                        Our seamless process ensures your invitations are designed perfectly and delivered on time.
+                    <p className="text-gray-700 text-lg font-light max-w-2xl">
+                        Our seamless process ensures your premium invitations are crafted beautifully and delivered on time.
                     </p>
                 </div>
 
@@ -73,27 +85,32 @@ const HowItWorks = () => {
                                 <div
                                     key={index}
                                     ref={el => elementsRef.current[index] = el}
-                                    className="lg:w-[400px] lg:flex-shrink-0 lg:pr-16 relative"
+                                    className="lg:w-[400px] lg:flex-shrink-0 lg:pr-12 relative"
                                 >
-                                    <div className="bg-white/5 backdrop-blur-xl p-8 rounded-2xl border border-white/10 shadow-lg hover:shadow-[#D4AF37]/10 transition-all duration-300 relative group h-full overflow-hidden hover:bg-white/10">
-
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 30 }}
+                                        whileInView={{ opacity: 1, y: 0 }}
+                                        viewport={{ once: true }}
+                                        transition={{ delay: index * 0.1 }}
+                                        className="premium-card premium-card-blush h-full group"
+                                    >
                                         {/* Step Number Background */}
-                                        <span className="absolute -top-6 -right-4 text-8xl font-serif font-black text-white/5 group-hover:text-[#D4AF37]/10 transition-colors duration-500 pointer-events-none">
+                                        <span className="absolute -top-2 -right-2 text-7xl font-serif font-bold text-[#D4AF37]/5 group-hover:text-[#D4AF37]/10 transition-colors duration-500 pointer-events-none">
                                             {index + 1}
                                         </span>
 
-                                        <div className="w-16 h-16 bg-zinc-900 border border-white/10 text-[#D4AF37] rounded-full flex items-center justify-center mb-8 relative z-10 group-hover:scale-110 group-hover:bg-[#D4AF37] group-hover:text-zinc-900 group-hover:border-transparent transition-all duration-300 shadow-sm">
-                                            <Icon size={32} />
+                                        <div className="w-16 h-16 bg-gradient-to-br from-[#D4AF37] to-[#B68A2E] text-white rounded-2xl flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform duration-300 shadow-lg">
+                                            <Icon size={28} />
                                         </div>
 
-                                        <h3 className="text-2xl font-serif text-white mb-4 relative z-10 tracking-wide">{step.title}</h3>
-                                        <p className="text-zinc-400 leading-relaxed font-sans relative z-10">{step.desc}</p>
+                                        <h3 className="text-2xl font-serif text-[#4A2E2A] mb-4 relative z-10 tracking-wide">{step.title}</h3>
+                                        <p className="text-gray-700 font-light relative z-10 leading-relaxed">{step.desc}</p>
 
                                         {/* Connecting Line (Desktop only) */}
                                         {index !== steps.length - 1 && (
-                                            <div className="hidden lg:block absolute top-[5rem] -right-8 w-16 h-[2px] bg-gradient-to-r from-[#D4AF37]/50 to-transparent opacity-50" />
+                                            <div className="hidden lg:block absolute top-[5rem] -right-8 w-8 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent" />
                                         )}
-                                    </div>
+                                    </motion.div>
                                 </div>
                             );
                         })}
