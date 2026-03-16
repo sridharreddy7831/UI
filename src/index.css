@@ -13,7 +13,35 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-overflow-scrolling: touch;
 }
+
+/* Optimization for mobile touch devices */
+@media (max-width: 768px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Reduce heavy blurs on mobile */
+  .glass {
+    backdrop-filter: blur(4px) !important;
+    -webkit-backdrop-filter: blur(4px) !important;
+  }
+  
+  .glass-card {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+  }
+  
+  /* Prevent excessive repaints */
+  .framer-motion-element, 
+  [style*="transform"],
+  .backdrop-blur-xl,
+  .backdrop-blur-md {
+    will-change: transform, opacity;
+  }
+}
+
 
 body {
   margin: 0;

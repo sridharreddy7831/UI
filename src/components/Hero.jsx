@@ -69,7 +69,7 @@ const Hero = () => {
 
             {/* 3D Background - moved behind the glassmorphism hero */}
             <div className="absolute inset-0 z-0">
-                <Canvas shadows>
+                <Canvas shadows dpr={[1, 1.5]} gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}>
                     <PerspectiveCamera makeDefault position={[0, 0, 10]} />
                     <ambientLight intensity={0.5} />
                     <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={1} castShadow />

@@ -5,16 +5,20 @@ import AdminPage from './pages/AdminPage';
 import CollectionPage from './pages/CollectionPage';
 import WhatsAppButton from './components/ui/WhatsAppButton';
 
+import SmoothScroll from './components/ui/SmoothScroll';
+
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/collections/:slug" element={<CollectionPage />} />
-      </Routes>
-      <WhatsAppButton />
-    </BrowserRouter>
+    <SmoothScroll>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/admin" element={<AdminPage />} />
+          <Route path="/collections/:slug" element={<CollectionPage />} />
+        </Routes>
+        <WhatsAppButton />
+      </BrowserRouter>
+    </SmoothScroll>
   );
 }
 

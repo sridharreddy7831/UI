@@ -46,9 +46,11 @@ export default function GlassmorphismTrustHero() {
         .animate-fade-in {
           animation: fadeSlideIn 0.8s ease-out forwards;
           opacity: 0;
+          will-change: opacity, transform;
         }
         .animate-marquee {
           animation: marquee 40s linear infinite; 
+          will-change: transform;
         }
         .delay-100 { animation-delay: 0.1s; }
         .delay-200 { animation-delay: 0.2s; }
