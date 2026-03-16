@@ -6,7 +6,7 @@ export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
 export const removeToken = () => localStorage.removeItem(TOKEN_KEY);
 
 // ─── Fetch helpers ───────────────────────────────────────────────────────────
-const BASE = import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api` : '/api';
+const BASE = (import.meta.env.VITE_API_URL || '') + '/api';
 
 const handleErr = async (res) => {
     if (!res.ok) {

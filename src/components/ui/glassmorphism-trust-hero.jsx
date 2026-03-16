@@ -68,11 +68,11 @@ export default function GlassmorphismTrustHero() {
             {/* Dark overlay for depth */}
             <div className="absolute inset-0 z-0 bg-zinc-950/60" />
 
-            <div className="relative z-10 mx-auto max-w-7xl px-4 pt-32 pb-12 sm:px-6 md:pt-40 md:pb-20 lg:px-8">
-                <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-8 items-center">
+            <div className="relative z-10 w-full mx-auto max-w-7xl px-4 pt-24 pb-8 sm:px-6 md:pt-28 md:pb-12 lg:px-8">
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-center">
 
                     {/* --- LEFT COLUMN --- */}
-                    <div className="lg:col-span-7 flex flex-col justify-center space-y-8">
+                    <div className="lg:col-span-7 flex flex-col justify-center space-y-5 lg:space-y-6">
 
                         {/* Badge */}
                         <div className="animate-fade-in delay-100">
@@ -86,7 +86,7 @@ export default function GlassmorphismTrustHero() {
 
                         {/* Heading */}
                         <h1
-                            className="animate-fade-in delay-200 text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-serif tracking-tighter leading-[0.9]"
+                            className="animate-fade-in delay-200 text-5xl sm:text-6xl lg:text-7xl xl:text-[5rem] font-serif tracking-tighter leading-[0.9]"
                             style={{
                                 maskImage: "linear-gradient(180deg, black 0%, black 80%, transparent 100%)",
                                 WebkitMaskImage: "linear-gradient(180deg, black 0%, black 80%, transparent 100%)"
@@ -123,12 +123,12 @@ export default function GlassmorphismTrustHero() {
                     <div className="lg:col-span-5 space-y-6">
 
                         {/* Stats Card */}
-                        <div className="animate-fade-in delay-500 relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-xl shadow-2xl">
+                        <div className="animate-fade-in delay-500 relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-5 lg:p-6 backdrop-blur-xl shadow-2xl">
                             {/* Card Glow Effect */}
                             <div className="absolute top-0 right-0 -mr-16 -mt-16 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none" />
 
                             <div className="relative z-10 font-sans">
-                                <div className="flex items-center gap-4 mb-8">
+                                <div className="flex items-center gap-4 mb-5 lg:mb-6">
                                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20">
                                         <Target className="h-6 w-6 text-white" />
                                     </div>
@@ -139,7 +139,7 @@ export default function GlassmorphismTrustHero() {
                                 </div>
 
                                 {/* Progress Bar Section */}
-                                <div className="space-y-3 mb-8">
+                                <div className="space-y-3 mb-5 lg:mb-6">
                                     <div className="flex justify-between text-sm">
                                         <span className="text-zinc-400">Client Satisfaction</span>
                                         <span className="text-white font-medium">99%</span>
@@ -149,7 +149,7 @@ export default function GlassmorphismTrustHero() {
                                     </div>
                                 </div>
 
-                                <div className="h-px w-full bg-white/10 mb-6" />
+                                <div className="h-px w-full bg-white/10 mb-4 lg:mb-5" />
 
                                 {/* Mini Stats Grid */}
                                 <div className="grid grid-cols-3 gap-4 text-center">
@@ -161,7 +161,7 @@ export default function GlassmorphismTrustHero() {
                                 </div>
 
                                 {/* Tag Pills */}
-                                <div className="mt-8 flex flex-wrap gap-2">
+                                <div className="mt-5 lg:mt-6 flex flex-wrap gap-2">
                                     <div className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-medium tracking-wide text-zinc-300">
                                         <span className="relative flex h-2 w-2">
                                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
@@ -178,7 +178,7 @@ export default function GlassmorphismTrustHero() {
                         </div>
 
                         {/* Ceremony Types Marquee Card */}
-                        <div className="animate-fade-in delay-500 relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 py-8 backdrop-blur-xl">
+                        <div className="animate-fade-in delay-500 relative overflow-hidden rounded-3xl border border-white/10 bg-white/5 py-5 lg:py-6 backdrop-blur-xl">
                             <h3 className="mb-6 px-8 text-sm font-medium text-zinc-400 font-sans uppercase tracking-[0.15em]">
                                 We Create Invitations For
                             </h3>

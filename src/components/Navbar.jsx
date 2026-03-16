@@ -64,28 +64,7 @@ const Navbar = () => {
                         alt="Uthsav Invitations"
                         className="h-14 lg:h-20 w-auto object-contain drop-shadow-[0_0_10px_rgba(212,175,55,0.3)] group-hover:drop-shadow-[0_0_16px_rgba(212,175,55,0.6)] transition-all duration-300"
                     />
-                    <div className="flex flex-col">
-                        <div className="flex overflow-hidden">
-                            {"UTHSAV".split("").map((char, i) => (
-                                <motion.span
-                                    key={i}
-                                    initial={{ y: "100%" }}
-                                    animate={activeSection.toLowerCase() === "home" ? { y: 0 } : { y: "100%" }}
-                                    transition={{
-                                        duration: 0.5,
-                                        delay: i * 0.05,
-                                        ease: [0.22, 1, 0.36, 1]
-                                    }}
-                                    className="text-xl lg:text-3xl font-serif font-black tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-white to-[#D4AF37] bg-[length:200%_auto] animate-[shine_5s_linear_infinite]"
-                                >
-                                    {char}
-                                </motion.span>
-                            ))}
-                        </div>
-                        <span className="hidden md:block text-[8px] uppercase tracking-[0.3em] font-sans text-white/40 group-hover:text-[#D4AF37]/70 transition-colors duration-300">
-                            Invitations
-                        </span>
-                    </div>
+
                 </a>
             </div>
 
