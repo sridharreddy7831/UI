@@ -28,7 +28,7 @@ const Testimonials = () => {
             className="relative overflow-hidden"
             id="testimonials"
             style={{
-                background: 'linear-gradient(135deg, rgba(253, 230, 220, 0.4) 0%, rgba(212, 175, 55, 0.05) 50%, rgba(255, 248, 242, 0.6) 100%)'
+                background: 'linear-gradient(135deg, rgba(253, 230, 220, 0.5) 0%, rgba(217, 194, 240, 0.3) 50%, rgba(255, 248, 242, 0.5) 100%)'
             }}
         >
             {/* ── Section header ── */}

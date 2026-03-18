@@ -21,7 +21,7 @@ const WhatsAppButton = () => {
             <MessageCircle size={28} />
             
             {/* Tooltip */}
-            <div className="absolute right-full mr-4 bg-zinc-900 text-white text-xs px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-white/10 font-sans shadow-2xl">
+            <div className="absolute right-full mr-4 bg-white/90 text-[#4A2E2A] text-xs px-4 py-2 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap border border-[#D4AF37]/20 font-sans shadow-2xl">
                 Chat with us on WhatsApp
             </div>
 

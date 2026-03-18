@@ -23,7 +23,11 @@ const Portfolio = () => {
     const filteredItems = filter === 'All' ? items : items.filter(item => item.category === filter);
 
     return (
-        <section className="bg-zinc-950 relative border-t border-white/5 overflow-hidden" id="portfolio" ref={ref}>
+        <section className="relative border-t border-[#D4AF37]/10 overflow-hidden" id="portfolio" ref={ref}
+            style={{
+                background: 'linear-gradient(135deg, rgba(255, 248, 242, 0.8) 0%, rgba(248, 215, 232, 0.5) 50%, rgba(217, 194, 240, 0.4) 100%)'
+            }}
+        >
             <div className="container mx-auto relative z-10 hidden lg:block">
 
                 {/* 
@@ -37,7 +41,7 @@ const Portfolio = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                                 transition={{ duration: 0.6 }}
-                                className="text-4xl md:text-5xl lg:text-7xl font-serif text-white mb-4"
+                                className="text-4xl md:text-5xl lg:text-7xl font-serif text-[#4A2E2A] mb-4"
                             >
                                 Design <span className="text-[#D4AF37] italic">Gallery</span>
                             </motion.h2>
@@ -45,7 +49,7 @@ const Portfolio = () => {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                                 transition={{ duration: 0.6, delay: 0.2 }}
-                                className="text-zinc-400 text-lg max-w-2xl mx-auto"
+                                className="text-gray-700 text-lg max-w-2xl mx-auto"
                             >
                                 Explore our curated selection of premium invitation designs.
                             </motion.p>
@@ -53,15 +57,15 @@ const Portfolio = () => {
                     }
                 >
                     {/* Filters Inside the 3D Container Scroll Frame */}
-                    <div className="w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar bg-zinc-950 p-6 relative">
-                        <div className="sticky top-0 z-20 bg-zinc-950/90 backdrop-blur-md pt-2 pb-6 border-b border-white/10 mb-8 flex flex-wrap justify-center gap-4">
+                    <div className="w-full h-full overflow-y-auto overflow-x-hidden custom-scrollbar bg-transparent p-6 relative">
+                        <div className="sticky top-0 z-20 bg-white/50 backdrop-blur-md pt-2 pb-6 border-b border-[#D4AF37]/20 mb-8 flex flex-wrap justify-center gap-4">
                             {categories.map((cat) => (
                                 <button
                                     key={cat}
                                     onClick={() => setFilter(cat)}
                                     className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 font-sans ${filter === cat
-                                        ? 'bg-white/10 backdrop-blur-md text-[#D4AF37] shadow-lg border border-[#D4AF37]/50'
-                                        : 'bg-transparent text-zinc-400 border border-white/10 hover:border-white/30 hover:text-white hover:bg-white/5'
+                                        ? 'bg-[#D4AF37]/20 backdrop-blur-md text-[#D4AF37] shadow-lg border border-[#D4AF37]/50'
+                                        : 'bg-transparent text-gray-700 border border-[#D4AF37]/30 hover:border-[#D4AF37]/60 hover:text-[#D4AF37] hover:bg-white/30'
                                         }`}
                                 >
                                     {cat}
@@ -89,7 +93,7 @@ const Portfolio = () => {
                                         />
 
                                         {/* Hover Overlay */}
-                                        <div className="absolute inset-0 bg-zinc-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white backdrop-blur-sm backdrop-saturate-150">
+                                        <div className="absolute inset-0 bg-gradient-to-t from-[#4A2E2A]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white backdrop-blur-sm backdrop-saturate-150">
                                             <ZoomIn size={48} className="mb-4 text-[#D4AF37] transform scale-50 group-hover:scale-100 transition-transform duration-500" />
                                             <span className="font-serif text-xl tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{item.category}</span>
                                         </div>
@@ -111,7 +115,7 @@ const Portfolio = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                         transition={{ duration: 0.6 }}
-                        className="text-4xl md:text-5xl font-serif text-white mb-4"
+                        className="text-4xl md:text-5xl font-serif text-[#4A2E2A] mb-4"
                     >
                         Design <span className="text-[#D4AF37] italic">Gallery</span>
                     </motion.h2>
@@ -119,7 +123,7 @@ const Portfolio = () => {
                         initial={{ opacity: 0, y: 20 }}
                         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
-                        className="text-zinc-400 text-lg max-w-2xl mx-auto"
+                        className="text-gray-700 text-lg max-w-2xl mx-auto"
                     >
                         Explore our curated selection of premium invitation designs.
                     </motion.p>
@@ -131,8 +135,8 @@ const Portfolio = () => {
                             key={cat}
                             onClick={() => setFilter(cat)}
                             className={`px-6 py-2 rounded-full text-sm font-medium transition-all duration-300 font-sans ${filter === cat
-                                ? 'bg-white/10 backdrop-blur-md text-[#D4AF37] shadow-lg border border-[#D4AF37]/50'
-                                : 'bg-transparent text-zinc-400 border border-white/10 hover:border-white/30 hover:text-white hover:bg-white/5'
+                                ? 'bg-[#D4AF37]/20 backdrop-blur-md text-[#D4AF37] shadow-lg border border-[#D4AF37]/50'
+                                : 'bg-transparent text-gray-700 border border-[#D4AF37]/30 hover:border-[#D4AF37]/60 hover:text-[#D4AF37] hover:bg-white/30'
                                 }`}
                         >
                             {cat}
@@ -160,7 +164,7 @@ const Portfolio = () => {
                                 />
 
                                 {/* Hover Overlay */}
-                                <div className="absolute inset-0 bg-zinc-950/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white backdrop-blur-sm backdrop-saturate-150">
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#4A2E2A]/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center text-white backdrop-blur-sm backdrop-saturate-150">
                                     <ZoomIn size={48} className="mb-4 text-[#D4AF37] transform scale-50 group-hover:scale-100 transition-transform duration-500" />
                                     <span className="font-serif text-xl tracking-wide transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500">{item.category}</span>
                                     <div className="w-12 h-[1px] bg-[#D4AF37] mt-4 transform scale-0 group-hover:scale-100 transition-transform duration-500 delay-100 shadow-[0_0_10px_rgba(212,175,55,0.8)]" />
@@ -179,7 +183,7 @@ const Portfolio = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[1000] bg-zinc-950/90 backdrop-blur-xl flex items-center justify-center p-4"
+                        className="fixed inset-0 z-[1000] bg-[rgba(74,46,42,0.95)] backdrop-blur-xl flex items-center justify-center p-4"
                         onClick={() => setLightbox(null)}
                     >
                         <button

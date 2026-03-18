@@ -157,39 +157,73 @@ export const TextHoverEffect = ({
         {text}
       </text>
 
-      {/* Animated stroke draw-on effect with text reveal animation */}
-      <motion.text
-        x="50%"
-        y="50%"
-        textAnchor="middle"
-        dominantBaseline="middle"
-        strokeWidth="0.3"
-        fill="url(#revealFill)"
-        stroke="url(#revealFill)"
-        fontSize={fontSize}
-        fontFamily="Helvetica, Arial, sans-serif"
-        fontWeight="bold"
-        initial={{ strokeDashoffset: 1000, strokeDasharray: 1000, opacity: 0.3 }}
-        animate={
-          revealProgress === 1
-            ? {
-                strokeDashoffset: 0,
-                strokeDasharray: 1000,
-                opacity: 1,
-              }
-            : {
-                strokeDashoffset: 1000,
-                strokeDasharray: 1000,
-                opacity: 0.3,
-              }
-        }
-        transition={{
-          duration: 1.2,
-          ease: "easeInOut",
-        }}
-      >
-        {text}
-      </motion.text>
+      {/* Write each letter one by one like handwriting */}
+      {text.split('').map((letter, index) => (
+        <motion.text
+          key={`letter-outline-${index}`}
+          x={`${50 + (index - text.length / 2) * 8}%`}
+          y="50%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          strokeWidth="0.3"
+          fill="transparent"
+          stroke="#D4AF37"
+          fontSize={fontSize}
+          fontFamily="Helvetica, Arial, sans-serif"
+          fontWeight="bold"
+          initial={{ strokeDashoffset: 300, strokeDasharray: 300, opacity: 0 }}
+          animate={
+            revealProgress === 1
+              ? {
+                  strokeDashoffset: 0,
+                  strokeDasharray: 300,
+                  opacity: 1,
+                }
+              : {
+                  strokeDashoffset: 300,
+                  strokeDasharray: 300,
+                  opacity: 0,
+                }
+          }
+          transition={{
+            duration: 0.4,
+            delay: index * 0.12,
+            ease: "easeInOut",
+          }}
+        >
+          {letter}
+        </motion.text>
+      ))}
+
+      {/* Fill letters one by one after outline */}
+      {text.split('').map((letter, index) => (
+        <motion.text
+          key={`letter-fill-${index}`}
+          x={`${50 + (index - text.length / 2) * 8}%`}
+          y="50%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          strokeWidth="0.3"
+          fill="url(#revealFill)"
+          stroke="transparent"
+          fontSize={fontSize}
+          fontFamily="Helvetica, Arial, sans-serif"
+          fontWeight="bold"
+          initial={{ opacity: 0 }}
+          animate={
+            revealProgress === 1
+              ? { opacity: 1 }
+              : { opacity: 0 }
+          }
+          transition={{
+            duration: 0.3,
+            delay: text.length * 0.12 + 0.4 + index * 0.08,
+            ease: "easeInOut",
+          }}
+        >
+          {letter}
+        </motion.text>
+      ))}
 
       {/* Cursor-following gold gradient reveal */}
       <text

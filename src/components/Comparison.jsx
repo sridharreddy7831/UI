@@ -142,7 +142,7 @@ const Comparison = () => {
                                 <span className="text-[#D4AF37] text-xs tracking-widest font-medium">FROM JUST</span>
                                 <div className="text-right">
                                     <span className="block text-gray-600 text-xs tracking-wider mb-1">Starting at</span>
-                                    <span className="block text-4xl font-serif text-[#D4AF37]">₹1,000</span>
+                                    <span className="block text-4xl font-serif text-[#D4AF37]">₹599</span>
                                 </div>
                             </div>
                         </div>

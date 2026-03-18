@@ -117,7 +117,7 @@ const Hero = () => {
                     >
                         Crafting Elegant<br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] to-[#B68A2E]">
-                            Digital Wedding Invitations
+                            Digital Invitations
                         </span>
                     </motion.h1>
 

@@ -38,11 +38,13 @@ export function ImageCarouselHero({
   }
 
   return (
-    <div className="relative w-full min-h-screen bg-zinc-950 overflow-hidden" id="about">
+    <div className="relative w-full min-h-screen overflow-hidden" id="about" style={{
+      background: 'linear-gradient(135deg, rgba(253, 230, 220, 0.6) 0%, rgba(255, 248, 242, 0.8) 50%, rgba(217, 194, 240, 0.4) 100%)'
+    }}>
       {/* Animated background gradient */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-900/10 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#D4AF37]/8 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#D4AF37]/5 rounded-full blur-3xl animate-pulse" />
       </div>
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 py-24 min-h-screen flex items-center">
@@ -85,7 +87,7 @@ export function ImageCarouselHero({
                         "relative w-full h-full rounded-2xl overflow-hidden shadow-2xl",
                         "transition-transform duration-300 hover:scale-110",
                         "cursor-pointer group",
-                        "border border-white/10"
+                        "border border-[#D4AF37]/20"
                       )}
                       style={{
                         transformStyle: "preserve-3d",
@@ -113,11 +115,11 @@ export function ImageCarouselHero({
                 <span className="w-8 h-[1px] bg-[#D4AF37]"></span>
                 {subtitle}
               </h2>
-              <h1 className="text-4xl sm:text-5xl font-serif font-bold text-white mb-6 leading-tight">
+              <h1 className="text-4xl sm:text-5xl font-serif font-bold text-[#4A2E2A] mb-6 leading-tight">
                 {title}
               </h1>
 
-              <p className="text-lg text-zinc-400 mb-8 max-w-xl mx-auto lg:mx-0">
+              <p className="text-lg text-gray-700 mb-8 max-w-xl mx-auto lg:mx-0">
                 {description}
               </p>
 
@@ -126,9 +128,9 @@ export function ImageCarouselHero({
                 onClick={onCtaClick}
                 className={cn(
                   "inline-flex items-center gap-2 px-8 py-3 rounded-full",
-                  "bg-[#D4AF37] text-zinc-950 font-medium",
-                  "hover:shadow-lg hover:shadow-[#D4AF37]/20 hover:scale-105 transition-all duration-300",
-                  "active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2 focus:ring-offset-zinc-950",
+                  "bg-[#D4AF37] text-white font-medium",
+                  "hover:shadow-lg hover:shadow-[#D4AF37]/30 hover:scale-105 transition-all duration-300",
+                  "active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#D4AF37] focus:ring-offset-2 focus:ring-offset-white",
                   "group"
                 )}
               >
@@ -147,21 +149,21 @@ export function ImageCarouselHero({
                       key={index}
                       className={cn(
                         "p-6 rounded-xl text-left",
-                        "bg-white/5 backdrop-blur-sm border border-white/10 shadow-lg",
-                        "hover:bg-white/10 hover:border-white/20 transition-all duration-300",
+                        "bg-white/50 backdrop-blur-sm border border-[#D4AF37]/20 shadow-lg",
+                        "hover:bg-white/70 hover:border-[#D4AF37]/40 transition-all duration-300",
                         "group",
                         index === 2 ? "sm:col-span-2 lg:col-span-1" : "" // Handle layout gracefully if 3 items
                       )}
                     >
                       {Icon && (
-                        <div className="w-10 h-10 mb-4 bg-white/5 border border-white/20 text-[#D4AF37] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:bg-[#D4AF37] group-hover:text-zinc-900 group-hover:border-transparent">
+                        <div className="w-10 h-10 mb-4 bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#D4AF37] rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300 group-hover:bg-[#D4AF37] group-hover:text-white group-hover:border-transparent">
                           <Icon size={20} />
                         </div>
                       )}
-                      <h3 className="text-base font-sans font-semibold text-white mb-2 group-hover:text-[#D4AF37] transition-colors">
+                      <h3 className="text-base font-sans font-semibold text-[#4A2E2A] mb-2 group-hover:text-[#D4AF37] transition-colors">
                         {feature.title}
                       </h3>
-                      <p className="text-sm text-zinc-400">{feature.description}</p>
+                      <p className="text-sm text-gray-700">{feature.description}</p>
                     </div>
                   );
                 })}
