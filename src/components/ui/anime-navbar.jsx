@@ -162,142 +162,102 @@ function DesktopNavBar({ items, activeTab, setActiveTab, hoveredTab, setHoveredT
 
 function MobileRadialNavBar({ items, activeTab, setActiveTab, hoveredTab, setHoveredTab }) {
     const [isOpen, setIsOpen] = useState(false)
-    const [angleOffset, setAngleOffset] = useState(0)
-
-    useEffect(() => {
-        if (!isOpen) return;
-
-        let animationFrame;
-        const animate = () => {
-            setAngleOffset(prev => prev + 0.002);
-            animationFrame = requestAnimationFrame(animate);
-        };
-        animationFrame = requestAnimationFrame(animate);
-
-        return () => cancelAnimationFrame(animationFrame);
-    }, [isOpen]);
-
-    const radius = 120;
 
     return (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[10000] flex items-center justify-center pointer-events-none pb-4 lg:hidden">
+        <div className="lg:hidden">
+            {/* Apple-style sheet menu */}
             <AnimatePresence>
                 {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.5, rotate: -45 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        exit={{ opacity: 0, scale: 0.5, rotate: 45 }}
-                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                        className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                    >
-                        {/* Dashed background circle */}
-                        <div
-                            className="absolute rounded-full border border-dashed border-[#D4AF37]/30"
-                            style={{
-                                width: `${radius * 2}px`,
-                                height: `${radius * 2}px`,
-                                top: `calc(50% - ${radius}px)`,
-                                left: `calc(50% - ${radius}px)`,
-                            }}
+                    <>
+                        {/* Backdrop */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setIsOpen(false)}
+                            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[9998]"
                         />
 
-                        {items.map((item, index) => {
-                            const angle = (index / items.length) * 2 * Math.PI + angleOffset;
-                            const x = radius * Math.cos(angle);
-                            const y = radius * Math.sin(angle);
+                        {/* Menu Sheet */}
+                        <motion.div
+                            initial={{ y: -400, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: -400, opacity: 0 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className="fixed top-20 right-4 z-[9999] w-80 rounded-2xl bg-white/95 backdrop-blur-xl shadow-2xl border border-white/20 overflow-hidden"
+                        >
+                            {/* Menu items */}
+                            <div className="divide-y divide-gray-200/50">
+                                {items.map((item) => {
+                                    const Icon = item.icon;
+                                    const isActive = activeTab === item.name;
 
-                            const Icon = item.icon;
-                            const isActive = activeTab === item.name;
-                            const isHovered = hoveredTab === item.name;
-
-                            return (
-                                <motion.a
-                                    key={item.name}
-                                    href={item.url}
-                                    onClick={(e) => handleNavClick(e, item.url, item.section, () => {
-                                        setActiveTab(item.name);
-                                        setIsOpen(false);
-                                    })}
-                                    onMouseEnter={() => setHoveredTab(item.name)}
-                                    onMouseLeave={() => setHoveredTab(null)}
-                                    className={cn(
-                                        "absolute flex items-center justify-center w-12 h-12 rounded-full border shadow-[0_0_15px_rgba(0,0,0,0.5)] pointer-events-auto transition-colors duration-300",
-                                        isActive ? "bg-gradient-to-tr from-[#D4AF37] to-[#F3E5AB] border-white/40 text-zinc-950" : "bg-zinc-900 border-[#D4AF37]/30 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]"
-                                    )}
-                                    style={{
-                                        transform: `translate(${x}px, ${y}px)`,
-                                    }}
-                                    whileHover={{ scale: 1.15 }}
-                                    whileTap={{ scale: 0.95 }}
-                                >
-                                    <Icon size={18} strokeWidth={isActive ? 2.5 : 2} />
-
-                                    {isActive && (
-                                        <motion.div
-                                            className="absolute inset-0 rounded-full -z-10 overflow-hidden"
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: [0.3, 0.5, 0.3], scale: [1, 1.1, 1] }}
-                                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                                    return (
+                                        <motion.a
+                                            key={item.name}
+                                            href={item.url}
+                                            onClick={(e) => handleNavClick(e, item.url, item.section, () => {
+                                                setActiveTab(item.name);
+                                                setIsOpen(false);
+                                            })}
+                                            whileHover={{ backgroundColor: "rgba(212, 175, 55, 0.1)" }}
+                                            className={cn(
+                                                "px-6 py-4 flex items-center gap-4 transition-all duration-300",
+                                                isActive && "bg-[#D4AF37]/10 border-l-2 border-[#D4AF37]"
+                                            )}
                                         >
-                                            <div className="absolute inset-0 bg-[#D4AF37]/30 rounded-full blur-md" />
-                                        </motion.div>
-                                    )}
-
-                                    {isActive && (
-                                        <motion.div
-                                            layoutId="anime-mascot-mobile"
-                                            className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none"
-                                            initial={false}
-                                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                        >
-                                            <Mascot isActiveChild={isHovered || isActive} tailDirection="down" />
-                                        </motion.div>
-                                    )}
-                                </motion.a>
-                            )
-                        })}
-                    </motion.div>
+                                            <Icon
+                                                size={20}
+                                                className={cn(
+                                                    "transition-colors",
+                                                    isActive ? "text-[#D4AF37]" : "text-gray-600"
+                                                )}
+                                            />
+                                            <span
+                                                className={cn(
+                                                    "font-semibold transition-colors",
+                                                    isActive ? "text-[#D4AF37]" : "text-gray-700"
+                                                )}
+                                            >
+                                                {item.name}
+                                            </span>
+                                            {isActive && (
+                                                <motion.div
+                                                    className="ml-auto"
+                                                    initial={{ scale: 0 }}
+                                                    animate={{ scale: 1 }}
+                                                    exit={{ scale: 0 }}
+                                                >
+                                                    <div className="w-2 h-2 rounded-full bg-[#D4AF37]" />
+                                                </motion.div>
+                                            )}
+                                        </motion.a>
+                                    );
+                                })}
+                            </div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
 
+            {/* Hamburger button - fixed top right */}
             <motion.button
                 onClick={() => setIsOpen(!isOpen)}
                 className={cn(
-                    "relative z-[20000] flex items-center justify-center w-16 h-16 rounded-full border shadow-[0_0_30px_rgba(212,175,55,0.4)] pointer-events-auto backdrop-blur-md transition-colors duration-500",
-                    isOpen ? "bg-white border-white/40 text-zinc-950" : "bg-gradient-to-tr from-zinc-900 to-zinc-800 border-[#D4AF37]/50 text-[#D4AF37]"
+                    "fixed top-6 right-6 z-[10000] flex items-center justify-center w-12 h-12 rounded-full pointer-events-auto transition-all duration-300",
+                    isOpen
+                        ? "bg-[#D4AF37] text-white shadow-lg"
+                        : "bg-white/90 backdrop-blur-sm border border-[#D4AF37]/20 text-gray-800 shadow-lg hover:shadow-xl hover:border-[#D4AF37]/40"
                 )}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
             >
                 <motion.div
-                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    animate={{ rotate: isOpen ? 90 : 0 }}
                     transition={{ duration: 0.3 }}
                 >
-                    {isOpen ? <X size={28} className="text-zinc-950 border-zinc-950" strokeWidth={2.5} /> : <Menu size={28} />}
+                    {isOpen ? <X size={24} strokeWidth={2.5} /> : <Menu size={24} strokeWidth={2.5} />}
                 </motion.div>
-
-                <AnimatePresence>
-                    {!isOpen && (
-                        <motion.div
-                            layoutId="anime-mascot-mobile"
-                            className="absolute -top-10 left-1/2 -translate-x-1/2 pointer-events-none"
-                            initial={false}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        >
-                            <Mascot isActiveChild={false} tailDirection="down" />
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                <AnimatePresence>
-                    {!isOpen && (
-                        <motion.div
-                            className="absolute -inset-1 rounded-full border border-[#D4AF37]/30 pointer-events-none -z-10"
-                            animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }}
-                            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                        />
-                    )}
-                </AnimatePresence>
             </motion.button>
         </div>
     )

@@ -158,7 +158,7 @@ function HoverFooter() {
             </div>
 
             {/* Interactive Text hover effect */}
-            <div className="w-full flex justify-center items-center h-[12rem] md:h-[18rem] lg:h-[24rem] -mt-10 md:-mt-20 lg:-mt-40 -mb-10 md:-mb-16 lg:-mb-20 overflow-hidden relative z-10 pointer-events-auto">
+            <div className="w-full flex justify-center items-center h-[10rem] sm:h-[12rem] md:h-[18rem] lg:h-[24rem] -mt-6 sm:-mt-10 md:-mt-20 lg:-mt-40 -mb-6 sm:-mb-10 md:-mb-16 lg:-mb-20 overflow-hidden relative z-10 pointer-events-auto">
                 <TextHoverEffect text="UTHSAV" className="w-full h-full min-w-[300px]" />
             </div>
 

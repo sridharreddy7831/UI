@@ -12,9 +12,37 @@ export const TextHoverEffect = ({
   const [cursor, setCursor] = useState({ x: 0, y: 0 });
   const [hovered, setHovered] = useState(false);
   const [maskPosition, setMaskPosition] = useState({ cx: "50%", cy: "50%" });
+  const [revealProgress, setRevealProgress] = useState(0);
+  const [fontSize, setFontSize] = useState(72);
 
-  // Only trigger the draw animation when the SVG scrolls into view
-  const isInView = useInView(svgRef, { once: true, margin: "-50px" });
+  // Trigger animation when SVG comes into view
+  const isInView = useInView(svgRef, { margin: "-50px" });
+
+  useEffect(() => {
+    if (isInView) {
+      setRevealProgress(1);
+    } else {
+      setRevealProgress(0);
+    }
+  }, [isInView]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setFontSize(48);
+      } else if (window.innerWidth < 768) {
+        setFontSize(56);
+      } else if (window.innerWidth < 1024) {
+        setFontSize(64);
+      } else {
+        setFontSize(72);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (svgRef.current && cursor.x !== null && cursor.y !== null) {
@@ -90,6 +118,26 @@ export const TextHoverEffect = ({
             fill="url(#revealMask)"
           />
         </mask>
+
+        {/* Reveal animation mask */}
+        <motion.linearGradient
+          id="revealFill"
+          x1="0%"
+          y1="0%"
+          x2="100%"
+          y2="0%"
+          initial={{ x1: "-100%", x2: "0%" }}
+          animate={
+            revealProgress === 1
+              ? { x1: "0%", x2: "100%" }
+              : { x1: "-100%", x2: "0%" }
+          }
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+        >
+          <stop offset="0%"   stopColor="#D4AF37" />
+          <stop offset="50%"  stopColor="#F3E5AB" />
+          <stop offset="100%" stopColor="#D4AF37" />
+        </motion.linearGradient>
       </defs>
 
       {/* Faint outline trace — visible only on hover */}
@@ -101,7 +149,7 @@ export const TextHoverEffect = ({
         strokeWidth="0.3"
         fill="transparent"
         stroke="rgba(255,255,255,0.15)"
-        fontSize="72"
+        fontSize={fontSize}
         fontFamily="Helvetica, Arial, sans-serif"
         fontWeight="bold"
         style={{ opacity: hovered ? 0.7 : 0, transition: "opacity 0.3s" }}
@@ -109,28 +157,34 @@ export const TextHoverEffect = ({
         {text}
       </text>
 
-      {/* Animated stroke draw-on effect — triggers when scrolled into view */}
+      {/* Animated stroke draw-on effect with text reveal animation */}
       <motion.text
         x="50%"
         y="50%"
         textAnchor="middle"
         dominantBaseline="middle"
         strokeWidth="0.3"
-        fill="transparent"
-        stroke="#D4AF37"
-        fontSize="72"
+        fill="url(#revealFill)"
+        stroke="url(#revealFill)"
+        fontSize={fontSize}
         fontFamily="Helvetica, Arial, sans-serif"
         fontWeight="bold"
-        initial={{ strokeDashoffset: 1000, strokeDasharray: 1000 }}
-        animate={isInView ? {
-          strokeDashoffset: 0,
-          strokeDasharray: 1000,
-        } : {
-          strokeDashoffset: 1000,
-          strokeDasharray: 1000,
-        }}
+        initial={{ strokeDashoffset: 1000, strokeDasharray: 1000, opacity: 0.3 }}
+        animate={
+          revealProgress === 1
+            ? {
+                strokeDashoffset: 0,
+                strokeDasharray: 1000,
+                opacity: 1,
+              }
+            : {
+                strokeDashoffset: 1000,
+                strokeDasharray: 1000,
+                opacity: 0.3,
+              }
+        }
         transition={{
-          duration: 4,
+          duration: 1.2,
           ease: "easeInOut",
         }}
       >
@@ -147,7 +201,7 @@ export const TextHoverEffect = ({
         strokeWidth="0.3"
         mask="url(#textMask)"
         fill="transparent"
-        fontSize="72"
+        fontSize={fontSize}
         fontFamily="Helvetica, Arial, sans-serif"
         fontWeight="bold"
       >
