@@ -2,40 +2,53 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ArrowLeft, ImageIcon, Loader2 } from 'lucide-react';
-import { collectionsData } from '../data/collections';
-import { getShowcasesByCategory } from '../lib/data';
+import { getShowcasesByCategory, getCategoryBySlug } from '../lib/data';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 const CollectionPage = () => {
     const { slug } = useParams();
-    const collection = collectionsData[slug];
+    const [collection, setCollection] = useState(null);
     const [showcases, setShowcases] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        
-        // Dynamic SEO
-        if (collection) {
-            document.title = `${collection.title} | Uthsav Invitations`;
-            const meta = document.querySelector('meta[name="description"]');
-            if (meta) meta.setAttribute('content', collection.description);
-        }
 
-        const fetchShowcases = async () => {
+        const fetchAll = async () => {
             setLoading(true);
             try {
-                const data = await getShowcasesByCategory(slug);
-                setShowcases(data);
+                const [catData, itemsData] = await Promise.all([
+                    getCategoryBySlug(slug),
+                    getShowcasesByCategory(slug)
+                ]);
+                setCollection(catData);
+                setShowcases(itemsData);
+
+                // Dynamic SEO
+                if (catData) {
+                    document.title = `${catData.title} | Uthsav Invitations`;
+                    const meta = document.querySelector('meta[name="description"]');
+                    if (meta) meta.setAttribute('content', catData.description || catData.subtitle || '');
+                }
             } catch (err) {
-                console.error('Failed to fetch showcases:', err);
+                console.error('Failed to fetch collection data:', err);
+                setCollection(null);
             } finally {
                 setLoading(false);
             }
         };
-        fetchShowcases();
+        fetchAll();
     }, [slug]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white">
+                <Loader2 size={48} className="animate-spin text-[#D4AF37] mb-4" />
+                <p className="font-serif italic text-zinc-500">Loading collection...</p>
+            </div>
+        );
+    }
 
     if (!collection) {
         return (

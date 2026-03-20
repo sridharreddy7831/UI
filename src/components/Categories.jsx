@@ -96,28 +96,14 @@ const Categories = () => {
                 // is not in a route that might be statically checked, let's load it dynamically
                 const { getCategories } = await import('../lib/data');
                 const data = await getCategories();
-                if (data.length > 0) {
+                if (data && data.length > 0) {
                     setCategories(data.filter(c => c.visible !== false));
                 } else {
-                    setCategories([
-                        { title: "Wedding Invitations", slug: "wedding-invitations", image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&auto=format&fit=crop&q=80" },
-                        { title: "Housewarming Invitations", slug: "housewarming-invitations", image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=80" },
-                        { title: "Birthday Invitations", slug: "birthday-invitations", image: "https://images.unsplash.com/photo-1464349172961-60fb65f28450?w=800&auto=format&fit=crop&q=80" },
-                        { title: "Baby Shower Invitations", slug: "baby-shower-invitations", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&auto=format&fit=crop&q=80" },
-                        { title: "Engagement Invitations", slug: "engagement-invitations", image: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800&auto=format&fit=crop&q=80" },
-                        { title: "Naming Ceremony", slug: "naming-ceremony", image: "https://images.unsplash.com/photo-1544126592-807daf21565b?w=800&auto=format&fit=crop&q=80" }
-                    ]);
+                    setCategories([]);
                 }
             } catch (error) {
                 console.error("Failed to fetch categories:", error);
-                setCategories([
-                    { title: "Wedding Invitations", slug: "wedding-invitations", image: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&auto=format&fit=crop&q=80" },
-                    { title: "Housewarming Invitations", slug: "housewarming-invitations", image: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800&auto=format&fit=crop&q=80" },
-                    { title: "Birthday Invitations", slug: "birthday-invitations", image: "https://images.unsplash.com/photo-1464349172961-60fb65f28450?w=800&auto=format&fit=crop&q=80" },
-                    { title: "Baby Shower Invitations", slug: "baby-shower-invitations", image: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&auto=format&fit=crop&q=80" },
-                    { title: "Engagement Invitations", slug: "engagement-invitations", image: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=800&auto=format&fit=crop&q=80" },
-                    { title: "Naming Ceremony", slug: "naming-ceremony", image: "https://images.unsplash.com/photo-1544126592-807daf21565b?w=800&auto=format&fit=crop&q=80" }
-                ]);
+                setCategories([]);
             }
         };
 

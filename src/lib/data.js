@@ -9,7 +9,9 @@ export const removeToken = () => sessionStorage.removeItem(TOKEN_KEY);
 
 // ─── Fetch helpers ───────────────────────────────────────────────────────────
 // Ensure the base URL is stable even if env var includes a trailing slash
-const API_BASE = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '');
+// During production on uthsavinvites.in, this seamlessly targets the Render backend
+const ENV_URL = import.meta.env.VITE_API_URL || (import.meta.env.PROD ? 'https://ui-backend-kbxo.onrender.com' : '');
+const API_BASE = ENV_URL.replace(/\/+$/, '');
 const BASE = `${API_BASE}/api`;
 
 const handleErr = async (res) => {
@@ -137,6 +139,9 @@ export const deleteShowcase = (id) =>
 
 export const getCategories = () =>
     publicFetch(`${BASE}/categories`);
+
+export const getCategoryBySlug = (slug) =>
+    publicFetch(`${BASE}/categories/${slug}`);
 
 export const createCategory = (data) =>
     authFetch(`${BASE}/categories`, {

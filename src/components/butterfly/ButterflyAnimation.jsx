@@ -75,13 +75,23 @@ const ButterflyAnimation = ({
 
   // Generate butterfly configurations
   const butterflies = useMemo(() => {
-    return Array.from({ length: effectiveCount }, (_, i) => ({
-      id: i,
-      initialX: 10 + Math.random() * 80,                        // random start x (10-90vw)
-      initialY: 10 + Math.random() * 70,                        // random start y (10-80vh)
-      size: reducedMotion ? 30 + Math.random() * 15 : 35 + Math.random() * 25, // 35–60px
-      colorVariant: i % 5,                                       // cycle through 5 color palettes
-    }));
+    return Array.from({ length: effectiveCount }, (_, i) => {
+      // Pick a random edge to fly in from: 0=top, 1=right, 2=bottom, 3=left
+      const edge = Math.floor(Math.random() * 4);
+      let ix, iy;
+      if (edge === 0) { ix = Math.random() * 100; iy = -25; }
+      else if (edge === 1) { ix = 125; iy = Math.random() * 100; }
+      else if (edge === 2) { ix = Math.random() * 100; iy = 125; }
+      else { ix = -25; iy = Math.random() * 100; }
+
+      return {
+        id: i,
+        initialX: ix,
+        initialY: iy,
+        size: reducedMotion ? 30 + Math.random() * 15 : 35 + Math.random() * 25,
+        colorVariant: i % 5,
+      };
+    });
   }, [effectiveCount, reducedMotion]);
 
   // Track mouse position

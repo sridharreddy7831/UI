@@ -130,11 +130,21 @@ const generateFlightPath = (startX, startY) => {
   let cy = startY;
 
   for (let i = 0; i < steps; i++) {
-    cx += (Math.random() - 0.5) * 40; // drift ±20vw
-    cy += (Math.random() - 0.5) * 30; // drift ±15vh
-    // Clamp within bounds with padding
-    cx = Math.max(5, Math.min(95, cx));
-    cy = Math.max(5, Math.min(90, cy));
+    let driftX = (Math.random() - 0.5) * 40; // drift ±20vw
+    let driftY = (Math.random() - 0.5) * 30; // drift ±15vh
+
+    // Push strongly inward if spawned off-screen or getting too close to edges
+    if (cx < 15) driftX = 15 + Math.random() * 20;
+    if (cx > 85) driftX = -15 - Math.random() * 20;
+    if (cy < 15) driftY = 20 + Math.random() * 20;
+    if (cy > 85) driftY = -20 - Math.random() * 20;
+
+    cx += driftX;
+    cy += driftY;
+
+    // Strict clamp so they never clip edges while roaming inside the viewport
+    cx = Math.max(15, Math.min(85, cx));
+    cy = Math.max(15, Math.min(85, cy));
     points.push({ x: cx, y: cy });
   }
   return points;
@@ -158,6 +168,7 @@ const Butterfly = ({
   const [isDarting, setIsDarting] = useState(false);
   const [flightPath, setFlightPath] = useState(() => generateFlightPath(initialX, initialY));
   const butterflyRef = useRef(null);
+  const lastAngleRef = useRef(Math.random() * 360 - 180);
 
   // --- Magnetic mouse reaction ---
   const magneticX = useMotionValue(0);
@@ -203,6 +214,43 @@ const Butterfly = ({
     [flightPath]
   );
 
+  const rotateKeyframes = useMemo(() => {
+    if (flightPath.length < 2) return [lastAngleRef.current];
+
+    const angles = [];
+    // Approximate viewport aspect ratio to fix vector trigonometry skew
+    const aspect = typeof window !== 'undefined' ? (window.innerHeight / window.innerWidth) : 1;
+
+    for (let i = 0; i < flightPath.length; i++) {
+        let targetIdx = i < flightPath.length - 1 ? i + 1 : i;
+        let sourceIdx = targetIdx === i ? i - 1 : i;
+
+        if (sourceIdx < 0 || targetIdx < 0) {
+            angles.push(lastAngleRef.current);
+            continue;
+        }
+
+        const dx = flightPath[targetIdx].x - flightPath[sourceIdx].x;
+        const dy = (flightPath[targetIdx].y - flightPath[sourceIdx].y) * aspect;
+
+        // Origin SVG points UP (Y-), so Math.atan2(y,x) needs a 90 deg rotation to match
+        let angleDeg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+
+        let prevAngle = i === 0 ? lastAngleRef.current : angles[i - 1];
+        let diff = angleDeg - prevAngle;
+        
+        // Prevent infinite spin wrapping (e.g 170 to -170 turning all the way around)
+        while (diff > 180) diff -= 360;
+        while (diff < -180) diff += 360;
+        angleDeg = prevAngle + diff;
+
+        angles.push(angleDeg);
+    }
+    
+    lastAngleRef.current = angles[angles.length - 1];
+    return angles;
+  }, [flightPath]);
+
   // Total flight duration
   const flightDuration = isDarting ? 0.8 : (reducedMotion ? 30 : 18 + Math.random() * 14);
 
@@ -224,10 +272,10 @@ const Butterfly = ({
       const currentX = rect ? (rect.left / window.innerWidth) * 100 : initialX;
       const currentY = rect ? (rect.top / window.innerHeight) * 100 : initialY;
       
-      // Dart away fast to a single new random point
+      // Dart away fast to a single new random point strictly inside boundaries
       setFlightPath([
         { x: currentX, y: currentY }, 
-        { x: 5 + Math.random() * 90, y: 5 + Math.random() * 80 }
+        { x: 15 + Math.random() * 70, y: 15 + Math.random() * 70 }
       ]);
       
       setTimeout(() => setIsDarting(false), 800);
@@ -250,16 +298,14 @@ const Butterfly = ({
       animate={{
         left: xKeyframes,
         top: yKeyframes,
+        rotate: rotateKeyframes,
       }}
       transition={{
         duration: flightDuration,
-        ease: isDarting ? 'easeOut' : 'easeInOut',
+        ease: isDarting ? 'easeOut' : 'linear',
         repeat: 0,
-        // Natural pace with slower segments, removed when darting quickly
-        times: isDarting ? [0, 1] : xKeyframes.map((_, i) => {
-          const base = i / (xKeyframes.length - 1);
-          return Math.min(1, Math.max(0, base + (Math.random() - 0.5) * 0.05));
-        }).sort((a, b) => a - b),
+        // Using 'linear', so we drop custom times arrays and let the physics sweep beautifully
+        times: undefined,
       }}
       onAnimationComplete={handleFlightComplete}
       onMouseEnter={() => setIsHovered(true)}

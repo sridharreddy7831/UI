@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Loader2 } from 'lucide-react';
 import { getCategories } from '../lib/data';
-import { collectionsData } from '../data/collections';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
@@ -18,34 +17,10 @@ const PortfolioPage = () => {
         const fetchCategories = async () => {
             try {
                 const data = await getCategories();
-                if (data.length > 0) {
-                    setCategories(data);
-                } else {
-                    // Fallback to hardcoded data
-                    const fallback = Object.entries(collectionsData).map(([slug, info], i) => ({
-                        _id: slug,
-                        slug,
-                        title: info.title,
-                        subtitle: info.subtitle,
-                        description: info.description,
-                        image: info.heroImage,
-                        heroImage: info.heroImage,
-                        order: i,
-                    }));
-                    setCategories(fallback);
-                }
-            } catch {
-                const fallback = Object.entries(collectionsData).map(([slug, info], i) => ({
-                    _id: slug,
-                    slug,
-                    title: info.title,
-                    subtitle: info.subtitle,
-                    description: info.description,
-                    image: info.heroImage,
-                    heroImage: info.heroImage,
-                    order: i,
-                }));
-                setCategories(fallback);
+                setCategories(data);
+            } catch (err) {
+                console.error("Failed to load categories:", err);
+                setCategories([]);
             } finally {
                 setLoading(false);
             }
