@@ -124,7 +124,7 @@ const ButterflySVG = ({ colorVariant = 0 }) => {
  * Returns an array of { x, y } positions as percentages of viewport.
  */
 const generateFlightPath = (startX, startY) => {
-  const points = [];
+  const points = [{ x: startX, y: startY }];
   const steps = 4 + Math.floor(Math.random() * 3); // 4-6 waypoints
   let cx = startX;
   let cy = startY;
@@ -155,6 +155,7 @@ const Butterfly = ({
   reducedMotion = false,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [isDarting, setIsDarting] = useState(false);
   const [flightPath, setFlightPath] = useState(() => generateFlightPath(initialX, initialY));
   const butterflyRef = useRef(null);
 
@@ -194,16 +195,16 @@ const Butterfly = ({
 
   // --- Flight animation keyframes ---
   const xKeyframes = useMemo(
-    () => [initialX, ...flightPath.map((p) => p.x)].map((v) => `${v}vw`),
-    [initialX, flightPath]
+    () => flightPath.map((p) => `${p.x}vw`),
+    [flightPath]
   );
   const yKeyframes = useMemo(
-    () => [initialY, ...flightPath.map((p) => p.y)].map((v) => `${v}vh`),
-    [initialY, flightPath]
+    () => flightPath.map((p) => `${p.y}vh`),
+    [flightPath]
   );
 
   // Total flight duration
-  const flightDuration = reducedMotion ? 30 : 18 + Math.random() * 14;
+  const flightDuration = isDarting ? 0.8 : (reducedMotion ? 30 : 18 + Math.random() * 14);
 
   // Generate new path on animation complete
   const handleFlightComplete = useCallback(() => {
@@ -218,14 +219,26 @@ const Butterfly = ({
       if (onButterflyClick) {
         onButterflyClick(e.clientX, e.clientY);
       }
+      setIsDarting(true);
+      const rect = butterflyRef.current?.getBoundingClientRect();
+      const currentX = rect ? (rect.left / window.innerWidth) * 100 : initialX;
+      const currentY = rect ? (rect.top / window.innerHeight) * 100 : initialY;
+      
+      // Dart away fast to a single new random point
+      setFlightPath([
+        { x: currentX, y: currentY }, 
+        { x: 5 + Math.random() * 90, y: 5 + Math.random() * 80 }
+      ]);
+      
+      setTimeout(() => setIsDarting(false), 800);
     },
-    [onButterflyClick]
+    [onButterflyClick, initialX, initialY]
   );
 
   return (
     <motion.div
       ref={butterflyRef}
-      className="absolute cursor-pointer"
+      className="absolute cursor-pointer pointer-events-auto"
       style={{
         width: size,
         height: size,
@@ -240,12 +253,11 @@ const Butterfly = ({
       }}
       transition={{
         duration: flightDuration,
-        ease: 'easeInOut',
+        ease: isDarting ? 'easeOut' : 'easeInOut',
         repeat: 0,
-        // Natural pace with slower segments (hover/pause effect)
-        times: xKeyframes.map((_, i) => {
+        // Natural pace with slower segments, removed when darting quickly
+        times: isDarting ? [0, 1] : xKeyframes.map((_, i) => {
           const base = i / (xKeyframes.length - 1);
-          // Add slight randomness to pacing for organic feel
           return Math.min(1, Math.max(0, base + (Math.random() - 0.5) * 0.05));
         }).sort((a, b) => a - b),
       }}
@@ -260,27 +272,27 @@ const Butterfly = ({
         animate={{
           rotateY: reducedMotion ? [0, 30, 0] : [0, 45, 0, -20, 0, 40, 0],
           rotateZ: reducedMotion ? [0, 5, -5, 0] : [-8, 5, -10, 8, -5, 10, -8],
-          scale: isHovered ? 1.3 : [0.95, 1.05, 0.98, 1.02, 0.95],
+          scale: isDarting ? 0.7 : isHovered ? 1.3 : [0.95, 1.05, 0.98, 1.02, 0.95],
         }}
         transition={{
           rotateY: {
-            duration: reducedMotion ? 2 : 0.8 + Math.random() * 0.4,
+            duration: reducedMotion ? 2 : (isDarting ? 0.08 : 0.8 + Math.random() * 0.4),
             repeat: Infinity,
             ease: 'easeInOut',
           },
           rotateZ: {
-            duration: reducedMotion ? 6 : 3 + Math.random() * 2,
+            duration: reducedMotion ? 6 : (isDarting ? 0.3 : 3 + Math.random() * 2),
             repeat: Infinity,
             ease: 'easeInOut',
           },
           scale: {
-            duration: isHovered ? 0.3 : 4 + Math.random() * 2,
-            repeat: isHovered ? 0 : Infinity,
-            ease: isHovered ? 'easeOut' : 'easeInOut',
+            duration: isHovered || isDarting ? 0.3 : 4 + Math.random() * 2,
+            repeat: isHovered || isDarting ? 0 : Infinity,
+            ease: isHovered || isDarting ? 'easeOut' : 'easeInOut',
           },
         }}
       >
-        {/* Glow effect on hover */}
+        {/* Glow effect on hover/darting */}
         <motion.div
           className="absolute inset-0 rounded-full"
           style={{
@@ -288,10 +300,13 @@ const Butterfly = ({
             filter: 'blur(8px)',
           }}
           animate={{
-            opacity: isHovered ? 1 : 0.2,
-            scale: isHovered ? 1.6 : 1,
+            opacity: isDarting ? 1 : isHovered ? 1 : 0.2,
+            scale: isDarting ? 3 : isHovered ? 1.6 : 1,
+            background: isDarting 
+              ? 'radial-gradient(circle, rgba(216,27,96,0.6) 0%, transparent 80%)'
+              : 'radial-gradient(circle, rgba(212,175,55,0.3) 0%, transparent 70%)'
           }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: 0.3 }}
         />
 
         {/* Butterfly SVG */}

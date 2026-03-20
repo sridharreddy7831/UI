@@ -81,6 +81,8 @@ body {
   overflow-x: hidden;
   overflow-y: scroll;
   line-height: 1.6;
+  -webkit-user-select: none; /* Safari */
+  user-select: none; /* Standard */
 }
 
 /* Make all interactive elements transition smoothly */
