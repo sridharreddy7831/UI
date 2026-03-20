@@ -16,12 +16,18 @@ import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 // --- SVG Butterfly (elegant gold/pink/lavender inline SVG) ---
 const ButterflySVG = ({ colorVariant = 0 }) => {
   // Multiple color schemes matching the wedding palette
+  // Deep, highly-visible jewel tones that pop against the light backgrounds
   const palettes = [
-    { wing1: '#D4AF37', wing2: '#F8D7E8', body: '#B68A2E', accent: '#D9C2F0' },
-    { wing1: '#D9C2F0', wing2: '#F4B6C2', body: '#C9A0DC', accent: '#D4AF37' },
-    { wing1: '#F4B6C2', wing2: '#D4AF37', body: '#E6B7A9', accent: '#D9C2F0' },
-    { wing1: '#E6B7A9', wing2: '#D9C2F0', body: '#D4AF37', accent: '#F8D7E8' },
-    { wing1: '#F8D7E8', wing2: '#D4AF37', body: '#F4B6C2', accent: '#C9A0DC' },
+    // Deep Gold & Vibrant Pink
+    { wing1: '#B8860B', wing2: '#D81B60', body: '#4A2E2A', accent: '#FFD700' },
+    // Royal Purple & Rose Gold
+    { wing1: '#5E1B89', wing2: '#E6B7A9', body: '#3E0F5E', accent: '#FFB6C1' },
+    // Rich Burgundy & Champagne
+    { wing1: '#880E4F', wing2: '#D4AF37', body: '#4A0829', accent: '#F4B6C2' },
+    // Deep Plum & Radiant Magenta
+    { wing1: '#4A148C', wing2: '#C2185B', body: '#26094A', accent: '#D9C2F0' },
+    // Dark Rose & Deep Bronze
+    { wing1: '#AD1457', wing2: '#A67C00', body: '#5E092D', accent: '#F8D7E8' },
   ];
   const c = palettes[colorVariant % palettes.length];
 
@@ -30,7 +36,7 @@ const ButterflySVG = ({ colorVariant = 0 }) => {
       viewBox="0 0 100 100"
       xmlns="http://www.w3.org/2000/svg"
       className="w-full h-full"
-      style={{ filter: 'drop-shadow(0 0 6px rgba(212, 175, 55, 0.4))' }}
+      style={{ filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4)) drop-shadow(0 0 8px rgba(212, 175, 55, 0.6))' }}
     >
       <defs>
         <radialGradient id={`wg1-${colorVariant}`} cx="30%" cy="40%" r="70%">
