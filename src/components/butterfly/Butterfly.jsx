@@ -270,18 +270,18 @@ const Butterfly = ({
       <motion.div
         style={{ width: '100%', height: '100%', transformStyle: 'preserve-3d' }}
         animate={{
-          rotateY: reducedMotion ? [0, 30, 0] : [0, 45, 0, -20, 0, 40, 0],
-          rotateZ: reducedMotion ? [0, 5, -5, 0] : [-8, 5, -10, 8, -5, 10, -8],
+          rotateY: [0, 45, 0, -20, 0, 40, 0],
+          rotateZ: [-8, 5, -10, 8, -5, 10, -8],
           scale: isDarting ? 0.7 : isHovered ? 1.3 : [0.95, 1.05, 0.98, 1.02, 0.95],
         }}
         transition={{
           rotateY: {
-            duration: reducedMotion ? 2 : (isDarting ? 0.08 : 0.8 + Math.random() * 0.4),
+            duration: isDarting ? 0.08 : 0.8 + Math.random() * 0.4,
             repeat: Infinity,
             ease: 'easeInOut',
           },
           rotateZ: {
-            duration: reducedMotion ? 6 : (isDarting ? 0.3 : 3 + Math.random() * 2),
+            duration: isDarting ? 0.3 : 3 + Math.random() * 2,
             repeat: Infinity,
             ease: 'easeInOut',
           },

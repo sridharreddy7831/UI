@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { ArrowRight } from "lucide-react"
 import { cn } from "../../lib/utils"
 
@@ -11,22 +11,46 @@ export function ImageCarouselHero({
   images,
   features = [],
 }) {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })
+  const [mousePosition, setMousePosition] = useState({ x: 0.5, y: 0.5 })
   const [isHovering, setIsHovering] = useState(false)
-  const [rotatingCards, setRotatingCards] = useState([])
+  const carouselRef = useRef(null)
 
-  // Continuous rotation animation
+  // Use requestAnimationFrame for 60fps butter-smooth rotation (No React state re-rendering!)
   useEffect(() => {
-    const interval = setInterval(() => {
-      setRotatingCards((prev) => prev.map((_, i) => (prev[i] + 0.5) % 360))
-    }, 50)
+    let animationFrameId;
+    let currentAngle = 0;
+    const total = images.length;
+    
+    // Auto-update radius on resize
+    const getRadius = () => typeof window !== 'undefined' && window.innerWidth < 1024 ? 120 : 170;
 
-    return () => clearInterval(interval)
-  }, [])
-
-  // Initialize rotating cards
-  useEffect(() => {
-    setRotatingCards(images.map((_, i) => i * (360 / images.length)))
+    const animate = () => {
+      currentAngle += 0.2; // Speed of rotation
+      if (currentAngle >= 360) currentAngle = 0;
+      
+      if (carouselRef.current) {
+        const radius = getRadius();
+        const cards = carouselRef.current.children;
+        
+        for (let i = 0; i < Math.min(cards.length, total); i++) {
+          const card = cards[i];
+          const offsetAngle = i * (360 / total);
+          const finalAngle = (currentAngle + offsetAngle) * (Math.PI / 180);
+          
+          const x = Math.cos(finalAngle) * radius;
+          const y = Math.sin(finalAngle) * radius;
+          
+          const baseRotation = card.getAttribute('data-rotation') || "0";
+          card.style.transform = `translate(${x}px, ${y}px) rotateZ(${baseRotation}deg)`;
+        }
+      }
+      
+      animationFrameId = requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    return () => cancelAnimationFrame(animationFrameId);
   }, [images.length])
 
   const handleMouseMove = (e) => {
@@ -57,30 +81,21 @@ export function ImageCarouselHero({
             onMouseLeave={() => setIsHovering(false)}
           >
             {/* Rotating Image Cards */}
-            <div className="absolute inset-0 flex items-center justify-center p-4" style={{ perspective: "1000px" }}>
-              {images.map((image, index) => {
-                const angle = (rotatingCards[index] || 0) * (Math.PI / 180)
-                const radius = typeof window !== 'undefined' && window.innerWidth < 1024 ? 120 : 170
-                const x = Math.cos(angle) * radius
-                const y = Math.sin(angle) * radius
-
-                // 3D perspective effect based on mouse position
-                const perspectiveX = (mousePosition.x - 0.5) * 20
-                const perspectiveY = (mousePosition.y - 0.5) * 20
-
-                return (
+            <div 
+              className="absolute inset-0 flex items-center justify-center p-4 transition-transform duration-200 ease-out" 
+              style={{ 
+                perspective: "1000px",
+                transform: `rotateX(${(mousePosition.y - 0.5) * -15}deg) rotateY(${(mousePosition.x - 0.5) * 15}deg)`,
+                transformStyle: "preserve-3d"
+              }}
+            >
+              <div ref={carouselRef} className="absolute inset-0 flex items-center justify-center" style={{ transformStyle: "preserve-3d" }}>
+                {images.map((image) => (
                   <div
                     key={image.id}
-                    className="absolute w-28 h-36 sm:w-36 sm:h-44 lg:w-40 lg:h-48 transition-all duration-300"
-                    style={{
-                      transform: `
-                        translate(${x}px, ${y}px)
-                        rotateX(${perspectiveY}deg)
-                        rotateY(${perspectiveX}deg)
-                        rotateZ(${image.rotation}deg)
-                      `,
-                      transformStyle: "preserve-3d",
-                    }}
+                    data-rotation={image.rotation}
+                    className="absolute w-28 h-36 sm:w-36 sm:h-44 lg:w-40 lg:h-48"
+                    style={{ transformStyle: "preserve-3d", willChange: "transform" }}
                   >
                     <div
                       className={cn(
@@ -89,9 +104,7 @@ export function ImageCarouselHero({
                         "cursor-pointer group",
                         "border border-[#D4AF37]/20"
                       )}
-                      style={{
-                        transformStyle: "preserve-3d",
-                      }}
+                      style={{ transformStyle: "preserve-3d" }}
                     >
                       <img
                         src={image.src || "/placeholder.svg"}
@@ -102,8 +115,8 @@ export function ImageCarouselHero({
                       <div className="absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </div>
                   </div>
-                )
-              })}
+                ))}
+              </div>
             </div>
           </div>
 

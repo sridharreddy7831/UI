@@ -7,7 +7,6 @@ import Hero from '../components/Hero';
 import About from '../components/About';
 import Categories from '../components/Categories';
 import Comparison from '../components/Comparison';
-import Pricing from '../components/Pricing';
 import HowItWorks from '../components/HowItWorks';
 import Testimonials from '../components/Testimonials';
 import CallToAction from '../components/CallToAction';
@@ -67,14 +66,8 @@ function HomePage() {
             </SectionReveal>
 
             <SectionReveal delay={0}>
-              <div id="comparison">
-                <Comparison />
-              </div>
-            </SectionReveal>
-
-            <SectionReveal delay={0}>
               <div id="pricing">
-                <Pricing />
+                <Comparison />
               </div>
             </SectionReveal>
 

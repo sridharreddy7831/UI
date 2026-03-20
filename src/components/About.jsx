@@ -16,12 +16,7 @@ export default function About() {
       alt: "Wedding rings on a pillow",
       rotation: -8,
     },
-    {
-      id: "3",
-      src: "https://images.unsplash.com/photo-1543881665-cd6bb17f3521?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=900",
-      alt: "Beautiful floral arrangement at a reception",
-      rotation: 5,
-    },
+
     {
       id: "4",
       src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=900",
@@ -40,12 +35,7 @@ export default function About() {
       alt: "Bridal bouquet with pale pink flowers",
       rotation: 8,
     },
-    {
-      id: "7",
-      src: "https://images.unsplash.com/photo-1536717578496-ecf05244ddf1?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=900",
-      alt: "Event space with warm lighting",
-      rotation: 18,
-    },
+
     {
       id: "8",
       src: "https://images.unsplash.com/photo-1520854221256-17451cc331bf?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=900",

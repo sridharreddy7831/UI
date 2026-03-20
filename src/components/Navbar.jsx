@@ -8,7 +8,7 @@ const navItems = [
     { name: "About", url: "/#about", icon: Info, section: "about" },
     { name: "Portfolio", url: "/portfolio", icon: Grid, section: "" },
     { name: "Testimonials", url: "/testimonials", icon: Star, section: "" },
-    { name: "Pricing", url: "/#pricing", icon: CreditCard, section: "pricing" },
+    { name: "Why Us", url: "/#pricing", icon: CreditCard, section: "pricing" },
     { name: "Contact", url: "/#contact", icon: Mail, section: "contact" },
 ];
 
