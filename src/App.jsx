@@ -8,10 +8,12 @@ import TestimonialsPage from './pages/TestimonialsPage';
 import WhatsAppButton from './components/ui/WhatsAppButton';
 
 import SmoothScroll from './components/ui/SmoothScroll';
+import ButterflyAnimation from './components/butterfly';
 
 function App() {
   return (
     <SmoothScroll>
+      <ButterflyAnimation butterflyCount={6} />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
