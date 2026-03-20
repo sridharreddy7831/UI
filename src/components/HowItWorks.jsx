@@ -1,126 +1,151 @@
-import React, { useRef, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { MousePointerClick, FileText, PenTool, Send } from 'lucide-react';
 
-gsap.registerPlugin(ScrollTrigger);
-
 const steps = [
-    { icon: MousePointerClick, title: 'Choose Style', desc: 'Browse our collection and select a design that matches your aesthetic.' },
-    { icon: FileText, title: 'Send Details', desc: 'Provide your event information, specific wording, and personal photos.' },
-    { icon: PenTool, title: 'We Design', desc: 'Our team crafts your custom invitation with premium layouts and animations.' },
-    { icon: Send, title: 'Receive', desc: 'Get your final digital invitation link, ready to share with your guests.' },
+    { icon: MousePointerClick, title: 'Choose Style', desc: 'Browse our collection and select a design that beautifully matches your aesthetic and celebration theme.' },
+    { icon: FileText, title: 'Provide Details', desc: 'Share your event information, custom wording preferences, and upload your personal photos effortlessly.' },
+    { icon: PenTool, title: 'We Design', desc: 'Our team crafts your custom invitation, implementing premium layouts, dynamic animations, and elegant typography.' },
+    { icon: Send, title: 'Receive & Share', desc: 'Get your final digital invitation link within hours, ready to share globally with your beloved guests.' },
 ];
 
 const HowItWorks = () => {
     const containerRef = useRef(null);
-    const scrollWrapperRef = useRef(null);
-    const elementsRef = useRef([]);
 
-    useEffect(() => {
-        // Horizontal scroll effect using GSAP
-        if (!scrollWrapperRef.current || !containerRef.current) return;
+    // Track vertical scroll progress strictly within this timeline component
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start center", "end center"]
+    });
 
-        const sections = elementsRef.current;
-
-        // We only want horizontal scroll on desktop
-        const matchMedia = gsap.matchMedia();
-
-        matchMedia.add("(min-width: 1024px)", () => {
-            gsap.to(sections, {
-                xPercent: -100 * (sections.length - 1),
-                ease: "none",
-                scrollTrigger: {
-                    trigger: containerRef.current,
-                    pin: true,
-                    scrub: 1,
-                    end: () => "+=" + scrollWrapperRef.current.offsetWidth,
-                }
-            });
-        });
-
-        return () => {
-            matchMedia.revert();
-        };
-    }, []);
+    // We can extract a height percentage for the glowing line based on scroll
+    const lineHeight = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
 
     return (
         <section
-            className="overflow-hidden relative"
             id="how-it-works"
-            ref={containerRef}
+            className="relative py-24 overflow-hidden"
             style={{
-                background: 'linear-gradient(135deg, rgba(253, 230, 220, 0.3) 0%, rgba(255, 248, 242, 0.5) 100%)'
+                background: 'linear-gradient(135deg, rgba(253, 230, 220, 0.4) 0%, rgba(217, 194, 240, 0.1) 50%, rgba(255, 248, 242, 0.6) 100%)'
             }}
         >
-            <div className="py-24 md:py-32 lg:h-screen lg:flex lg:flex-col lg:justify-center relative z-10">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#D4AF37]/5 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-900/10 rounded-full blur-[100px] pointer-events-none" />
 
-                <div className="container mx-auto px-6 md:px-12 mb-16 lg:mb-24">
+            <div className="container mx-auto px-6 md:px-12 relative z-10">
+                
+                {/* Header */}
+                <div className="text-center max-w-3xl mx-auto mb-20">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="inline-block mb-6"
+                        transition={{ duration: 0.6 }}
+                        className="inline-block mb-4"
                     >
-                        <span className="text-[#D4AF37] text-sm font-medium tracking-widest">SIMPLE PROCESS</span>
+                        <span className="text-[#D4AF37] text-sm font-medium tracking-[0.2em] px-4 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/5">OUR PROCESS</span>
                     </motion.div>
-                    <h2 className="text-4xl md:text-5xl font-serif text-[#4A2E2A] mb-4">
-                        How It <span className="text-[#D4AF37]">Works</span>
-                    </h2>
-                    <p className="text-gray-700 text-lg font-light max-w-2xl">
-                        Our seamless process ensures your premium invitations are crafted beautifully and delivered on time.
-                    </p>
+                    <motion.h2
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.1 }}
+                        className="text-4xl md:text-5xl font-serif text-[#4A2E2A] mb-6"
+                    >
+                        The <span className="text-[#D4AF37] italic">Timeline</span>
+                    </motion.h2>
+                    <motion.p
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6, delay: 0.2 }}
+                        className="text-gray-700 text-lg font-light max-w-2xl mx-auto"
+                    >
+                        Your journey to a breathtaking premium invitation in exactly four simple steps.
+                    </motion.p>
                 </div>
 
-                {/* Horizontal Scroll Wrapper */}
-                <div className="container mx-auto px-6 md:px-12">
-                    <div
-                        className="flex flex-col lg:flex-row gap-12 lg:gap-0"
-                        ref={scrollWrapperRef}
-                    >
+                {/* Vertical Timeline Wrapper */}
+                <div ref={containerRef} className="relative max-w-5xl mx-auto pb-12">
+                    
+                    {/* The Unfilled Track Line (Grey/Transparent) */}
+                    <div className="absolute left-[38px] md:left-1/2 top-4 bottom-4 w-1 bg-gradient-to-b from-[#4A2E2A]/5 via-[#4A2E2A]/10 to-transparent -translate-x-1/2 rounded-full" />
+
+                    {/* The Filled Active Line (Gold) controlled by scrollYProgress */}
+                    <motion.div 
+                        className="absolute left-[38px] md:left-1/2 top-4 w-1 bg-gradient-to-b from-[#D4AF37] to-[#f4d160] -translate-x-1/2 rounded-full origin-top shadow-[0_0_15px_rgba(212,175,55,0.6)]"
+                        style={{ height: lineHeight }}
+                    />
+
+                    <div className="space-y-16 md:space-y-24">
                         {steps.map((step, index) => {
                             const Icon = step.icon;
+                            // Desktop mapping: Evens are left, Odds are right
+                            const isLeft = index % 2 === 0;
+
                             return (
-                                <div
-                                    key={index}
-                                    ref={el => elementsRef.current[index] = el}
-                                    className="lg:w-[400px] lg:flex-shrink-0 lg:pr-12 relative"
-                                >
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 30 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true }}
-                                        transition={{ delay: index * 0.1 }}
-                                        className="premium-card premium-card-blush h-full group"
-                                    >
-                                        {/* Step Number Background */}
-                                        <span className="absolute -top-2 -right-2 text-7xl font-serif font-bold text-[#D4AF37]/5 group-hover:text-[#D4AF37]/10 transition-colors duration-500 pointer-events-none">
-                                            {index + 1}
-                                        </span>
+                                <div key={index} className={`relative flex flex-col md:flex-row items-center w-full group cursor-default ${isLeft ? 'md:justify-start' : 'md:justify-end'}`}>
+                                    
+                                    {/* Desktop: Empty space to push content to correct side */}
+                                    <div className={`hidden md:block w-1/2 ${isLeft ? 'pr-16 text-right' : 'pl-16 text-left'}`}>
+                                        <motion.div
+                                            initial={{ opacity: 0, x: isLeft ? 50 : -50 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true, margin: "-100px" }}
+                                            transition={{ duration: 0.7, delay: 0.2, type: "spring" }}
+                                            className={`premium-card premium-card-blush rounded-3xl p-8 transition-all duration-500 hover:-translate-y-2 hover:shadow-[0_20px_40px_-15px_rgba(212,175,55,0.3)] shadow-lg relative overflow-hidden`}
+                                        >
+                                            {/* Step Number Watermark */}
+                                            <span className={`absolute -top-6 ${isLeft ? '-left-4' : '-right-4'} text-[120px] font-serif font-black text-[#D4AF37]/5 select-none pointer-events-none transition-all duration-500 group-hover:text-[#D4AF37]/10 group-hover:scale-110`}>
+                                                {index + 1}
+                                            </span>
 
-                                        <div className="w-16 h-16 bg-gradient-to-br from-[#D4AF37] to-[#B68A2E] text-white rounded-2xl flex items-center justify-center mb-6 relative z-10 group-hover:scale-110 transition-transform duration-300 shadow-lg">
-                                            <Icon size={28} />
-                                        </div>
+                                            <h3 className="text-2xl font-serif text-[#4A2E2A] mb-3 relative z-10">{step.title}</h3>
+                                            <p className="text-gray-600 font-light leading-relaxed relative z-10">{step.desc}</p>
+                                        </motion.div>
+                                    </div>
 
-                                        <h3 className="text-2xl font-serif text-[#4A2E2A] mb-4 relative z-10 tracking-wide">{step.title}</h3>
-                                        <p className="text-gray-700 font-light relative z-10 leading-relaxed">{step.desc}</p>
+                                    {/* Center Timeline Node Dot */}
+                                    <div className="absolute left-[38px] md:left-1/2 -translate-x-1/2 flex items-center justify-center z-20">
+                                        <motion.div
+                                            initial={{ scale: 0 }}
+                                            whileInView={{ scale: 1 }}
+                                            viewport={{ once: true, margin: "-100px" }}
+                                            transition={{ duration: 0.5, delay: 0.1 }}
+                                            className="w-20 h-20 rounded-full bg-white border border-[#D4AF37]/30 shadow-[0_0_20px_rgba(212,175,55,0.2)] flex items-center justify-center transition-transform duration-500 group-hover:scale-110 group-hover:border-[#D4AF37] group-hover:shadow-[0_0_30px_rgba(212,175,55,0.4)]"
+                                        >
+                                            {/* Inner circle */}
+                                            <div className="w-14 h-14 rounded-full bg-gradient-to-br from-[#D4AF37] to-[#c7a02c] text-white flex items-center justify-center">
+                                                <Icon size={24} className="group-hover:animate-bounce" />
+                                            </div>
+                                        </motion.div>
+                                    </div>
 
-                                        {/* Connecting Line (Desktop only) */}
-                                        {index !== steps.length - 1 && (
-                                            <div className="hidden lg:block absolute top-[5rem] -right-8 w-8 h-[2px] bg-gradient-to-r from-[#D4AF37] to-transparent" />
-                                        )}
-                                    </motion.div>
+                                    {/* Mobile Content Display */}
+                                    <div className="w-full pl-[90px] md:hidden pt-2">
+                                        <motion.div
+                                            initial={{ opacity: 0, x: 20 }}
+                                            whileInView={{ opacity: 1, x: 0 }}
+                                            viewport={{ once: true, margin: "-50px" }}
+                                            transition={{ duration: 0.6 }}
+                                            className="premium-card premium-card-blush rounded-2xl p-6 shadow-md relative overflow-hidden active:scale-[0.98] transition-all"
+                                        >
+                                            <span className="absolute -top-4 -right-2 text-[80px] font-serif font-black text-[#D4AF37]/5 select-none pointer-events-none">
+                                                {index + 1}
+                                            </span>
+                                            <h3 className="text-xl font-serif text-[#4A2E2A] mb-2">{step.title}</h3>
+                                            <p className="text-gray-600 font-light text-sm leading-relaxed">{step.desc}</p>
+                                        </motion.div>
+                                    </div>
+
                                 </div>
                             );
                         })}
                     </div>
                 </div>
-            </div>
 
-            {/* Decorative Blur Backgrounds */}
-            <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#D4AF37]/10 rounded-full blur-[100px] pointer-events-none" />
-            <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-900/20 rounded-full blur-[100px] pointer-events-none" />
+            </div>
         </section>
     );
 };
