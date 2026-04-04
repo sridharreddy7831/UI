@@ -848,15 +848,20 @@ export default function AdminPage() {
                                     layout
                                     className="bg-zinc-950 border border-white/5 rounded-2xl overflow-hidden group hover:border-[#D4AF37]/30 transition-all"
                                 >
-                                    <div className="aspect-video relative overflow-hidden bg-zinc-900">
-                                        {s.image ? (
+                                    <div className="aspect-video relative overflow-hidden bg-zinc-900 border-b border-white/5">
+                                        {s.link && s.link !== '#' && s.link !== '' ? (
+                                            <div className="absolute inset-0 h-full w-full">
+                                                <div className="absolute inset-0 z-10 pointer-events-none" />
+                                                <iframe src={s.link} title={s.name} className="w-full h-full border-none pointer-events-none" />
+                                            </div>
+                                        ) : s.image ? (
                                             <img src={s.image} alt={s.name} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
                                         ) : (
                                             <div className="flex items-center justify-center h-full text-zinc-800"><ImageIcon size={48} /></div>
                                         )}
-                                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button onClick={() => startEditSC(s)} className="p-2 bg-zinc-900/80 rounded-lg text-white hover:text-[#D4AF37]"><Edit3 size={14} /></button>
-                                            <button onClick={() => removeShowcase(s._id)} className="p-2 bg-red-500/80 rounded-lg text-white hover:bg-red-500"><Trash2 size={14} /></button>
+                                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                                            <button onClick={() => startEditSC(s)} className="p-2 bg-zinc-900/90 hover:bg-zinc-800 border border-white/10 rounded-lg text-white hover:text-[#D4AF37]"><Edit3 size={14} /></button>
+                                            <button onClick={() => removeShowcase(s._id)} className="p-2 bg-zinc-900/90 hover:bg-red-500/90 border border-white/10 rounded-lg text-white hover:text-white"><Trash2 size={14} /></button>
                                         </div>
                                     </div>
                                     <div className="p-4">
@@ -911,7 +916,7 @@ export default function AdminPage() {
                             </div>
 
                             <div>
-                                <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Image (Upload & Store in DB)</label>
+                                <label className="text-xs text-zinc-500 uppercase tracking-widest mb-2 block">Fallback Image (Optional if using Live URL)</label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <div className="relative aspect-video rounded-xl overflow-hidden bg-zinc-900 border border-white/5 group">
                                         {scForm.image ? (
