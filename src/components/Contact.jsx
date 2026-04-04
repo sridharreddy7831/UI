@@ -8,6 +8,7 @@ const Contact = () => {
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [submitted, setSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
     const [form, setForm] = useState({
         name: '', email: '', phone: '', eventType: '', eventDate: '', message: ''
     });
@@ -22,6 +23,7 @@ const Contact = () => {
         e.preventDefault();
         if (!form.name || !form.phone || !form.email) return;
         setLoading(true);
+        setError(null);
         try {
             await createContactMessage(form);
             setSubmitted(true);
@@ -29,7 +31,8 @@ const Contact = () => {
             setTimeout(() => setSubmitted(false), 5000);
         } catch (err) {
             console.error('Failed to submit:', err);
-            alert('Failed to send your inquiry. Please try again.');
+            setError('Unable to send your inquiry right now. Please try again or contact us via phone.');
+            setTimeout(() => setError(null), 6000);
         } finally {
             setLoading(false);
         }
@@ -107,7 +110,7 @@ const Contact = () => {
                                 </div>
                                 <div>
                                     <p className="text-xs font-medium text-[#D4AF37] uppercase tracking-widest">Studio</p>
-                                    <p className="font-light text-[#4A2E2A]">Hyderabad, India</p>
+                                    <p className="font-light text-[#4A2E2A]">Andhra Pradesh, India</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -173,6 +176,16 @@ const Contact = () => {
                                         className={`${inputClasses} resize-none`}
                                     />
                                 </div>
+
+                                {/* Inline error banner — replaces the old blocking alert() */}
+                                {error && (
+                                    <div className="flex items-center gap-3 p-4 mb-4 rounded-xl bg-red-50 border border-red-200 text-red-700 text-sm">
+                                        <svg className="shrink-0 w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                        </svg>
+                                        {error}
+                                    </div>
+                                )}
 
                                 <button
                                     type="submit"

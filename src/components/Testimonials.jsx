@@ -6,6 +6,7 @@ import { ContainerScroll, CardsContainer, CardTransformed, ReviewStars } from '.
 
 const Testimonials = () => {
     const [testimonials, setTestimonials] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const fetchTestimonials = () =>
         getTestimonials()
@@ -13,7 +14,8 @@ const Testimonials = () => {
                 // Ensure we only show the absolute latest 5 stories for maximum impact
                 setTestimonials(data.slice(-5).reverse());
             })
-            .catch(console.error);
+            .catch(console.error)
+            .finally(() => setLoading(false));
 
     useEffect(() => {
         fetchTestimonials();
@@ -21,7 +23,20 @@ const Testimonials = () => {
         return () => window.removeEventListener('testimonialsUpdated', fetchTestimonials);
     }, []);
 
-    if (!testimonials.length) return null;
+    if (loading) return (
+        <section id="testimonials" className="relative py-24 overflow-hidden" style={{
+            background: 'linear-gradient(135deg, rgba(253, 230, 220, 0.4) 0%, rgba(217, 194, 240, 0.2) 50%, rgba(255, 248, 242, 0.5) 100%)'
+        }}>
+            <div className="container mx-auto px-6 flex items-center justify-center h-64">
+                <div className="flex flex-col items-center gap-4 text-center opacity-50">
+                    <div className="w-12 h-12 rounded-full border-2 border-[#D4AF37] border-t-transparent animate-spin" />
+                    <p className="text-[#4A2E2A] font-serif text-lg">Loading cherished moments…</p>
+                </div>
+            </div>
+        </section>
+    );
+
+    if (testimonials.length === 0) return null; // Hide section if no testimonials
 
     const premiumInfoBlock = (
         <div className="space-y-8 md:space-y-10">

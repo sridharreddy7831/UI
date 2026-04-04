@@ -50,7 +50,7 @@ function HoverFooter() {
         },
         {
             icon: <MapPin size={18} className="text-[#D4AF37]" />,
-            text: "Hyderabad, India",
+            text: "Andhra Pradesh, India",
         },
     ];
 
@@ -59,22 +59,22 @@ function HoverFooter() {
         { icon: <Facebook size={20} />, label: "Facebook", href: "#" },
         { icon: <Instagram size={20} />, label: "Instagram", href: "#" },
         { icon: <Twitter size={20} />, label: "Twitter", href: "#" },
-        { icon: <Globe size={20} />, label: "Globe", href: "#" },
+        { icon: <Globe size={20} />, label: "Website", href: "https://uthsavinvites.in" },
     ];
 
     return (
-        <footer className="relative overflow-hidden" style={{
-            background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(201, 160, 220, 0.08) 50%, rgba(230, 183, 169, 0.08) 100%)'
-        }}>
-            {/* Decorative top border */}
-            <div className="h-1 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent" />
-
-            <div className="max-w-7xl mx-auto p-8 md:p-16 z-40 relative">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-8 lg:gap-16 pb-8 lg:pb-12 text-center md:text-left">
+        <footer className="bg-[#0F0F11]/10 relative h-fit rounded-3xl overflow-hidden m-8">
+            <div className="max-w-7xl mx-auto p-14 z-40 relative">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 md:gap-8 lg:gap-16 pb-12">
                     {/* Brand section */}
-                    <div className="flex flex-col items-center md:items-start space-y-4">
-                        <p className="text-2xl font-serif font-bold tracking-widest text-[#D4AF37]">UTHSAV</p>
-                        <p className="text-sm leading-relaxed text-gray-700 font-light">
+                    <div className="flex flex-col space-y-4">
+                        <div className="flex items-center space-x-2">
+                            <span className="text-[#D4AF37] text-3xl font-extrabold">
+                                &hearts;
+                            </span>
+                            <span className="text-white text-3xl font-bold">Uthsav</span>
+                        </div>
+                        <p className="text-sm leading-relaxed">
                             Celebrate Life's Sacred Moments. Crafting premium digital experiences for life's most precious occasions with grace and elegance.
                         </p>
                     </div>
@@ -82,7 +82,7 @@ function HoverFooter() {
                     {/* Footer link sections */}
                     {footerLinks.map((section) => (
                         <div key={section.title}>
-                            <h4 className="text-[#4A2E2A] text-lg font-serif font-semibold mb-6">
+                            <h4 className="text-white text-lg font-semibold mb-6">
                                 {section.title}
                             </h4>
                             <ul className="space-y-3">
@@ -90,7 +90,7 @@ function HoverFooter() {
                                     <li key={link.label} className="relative">
                                         <a
                                             href={link.href}
-                                            className="text-gray-700 hover:text-[#D4AF37] transition-all duration-300 font-light block hover:translate-x-1 transform"
+                                            className="hover:text-[#D4AF37] transition-colors"
                                         >
                                             {link.label}
                                         </a>
@@ -102,13 +102,13 @@ function HoverFooter() {
 
                     {/* Contact section */}
                     <div>
-                        <h4 className="text-[#4A2E2A] text-lg font-serif font-semibold mb-6">
-                            Contact
+                        <h4 className="text-white text-lg font-semibold mb-6">
+                            Contact Us
                         </h4>
-                        <ul className="space-y-4 text-gray-700 font-light">
+                        <ul className="space-y-4">
                             {contactInfo.map((item, i) => (
-                                <li key={i} className="flex items-center justify-center md:justify-start space-x-3">
-                                    <span className="text-[#D4AF37]">{item.icon}</span>
+                                <li key={i} className="flex items-center space-x-3">
+                                    {item.icon}
                                     {item.href ? (
                                         <a
                                             href={item.href}
@@ -127,39 +127,37 @@ function HoverFooter() {
                     </div>
                 </div>
 
-                {/* Divider */}
-                <div className="h-px bg-gradient-to-r from-transparent via-[#D4AF37]/20 to-transparent my-8" />
+            </div>
 
-                {/* Footer bottom */}
-                <div className="flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0 text-gray-600 font-light">
-                    <p className="text-center md:text-left tracking-wide">
-                        &copy; {new Date().getFullYear()} Uthsav Invitations. All rights reserved.
-                    </p>
+            {/* Line + social icons + copyright — middle */}
+            <div className="max-w-8xl mx-auto px-14 z-40 relative -mt-15">
+                <hr className="border-t border-gray-700 mb-8" />
 
-                    <div className="flex space-x-6 text-gray-700">
-                        <a href="#" className="hover:text-[#D4AF37] transition-colors font-light">Privacy Policy</a>
-                        <a href="#" className="hover:text-[#D4AF37] transition-colors font-light">Terms of Service</a>
-                    </div>
-
+                <div className="flex flex-col md:flex-row justify-between items-center text-sm space-y-4 md:space-y-0">
                     {/* Social icons */}
-                    <div className="flex space-x-6 text-gray-700">
+                    <div className="flex space-x-6 text-gray-400">
                         {socialLinks.map(({ icon, label, href }) => (
                             <a
                                 key={label}
                                 href={href}
                                 aria-label={label}
-                                className="hover:text-[#D4AF37] hover:scale-110 transition-all duration-300"
+                                className="hover:text-[#D4AF37] transition-colors"
                             >
                                 {icon}
                             </a>
                         ))}
                     </div>
+
+                    {/* Copyright */}
+                    <p className="text-center md:text-left">
+                        &copy; {new Date().getFullYear()} Uthsav Invitations. All rights reserved.
+                    </p>
                 </div>
             </div>
 
-            {/* Interactive Text hover effect */}
-            <div className="w-full flex justify-center items-center h-[10rem] sm:h-[12rem] md:h-[18rem] lg:h-[24rem] -mt-6 sm:-mt-10 md:-mt-20 lg:-mt-40 -mb-6 sm:-mb-10 md:-mb-16 lg:-mb-20 overflow-hidden relative z-10 pointer-events-auto">
-                <TextHoverEffect text="UTHSAV" className="w-full h-full min-w-[300px]" />
+            {/* "Uthsav" animated text — bottom */}
+            <div className="flex h-[12rem] sm:h-[16rem] md:h-[22rem] lg:h-[30rem] mt-2 -mb-6 sm:-mb-10 md:-mb-20 lg:-mb-36">
+                <TextHoverEffect text="Uthsav" className="z-50" />
             </div>
 
             <FooterBackgroundGradient />

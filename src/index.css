@@ -81,8 +81,15 @@ body {
   overflow-x: hidden;
   overflow-y: scroll;
   line-height: 1.6;
-  -webkit-user-select: none; /* Safari */
-  user-select: none; /* Standard */
+  /* 🔒 FIX: user-select:none removed — it prevented users from copying
+     contact info (phone, email) and broke accessibility. Apply selectively
+     to decorative/UI-only elements via .no-select utility class instead. */
+}
+
+/* Apply only to pure UI decoration elements, never to readable text */
+.no-select {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Make all interactive elements transition smoothly */

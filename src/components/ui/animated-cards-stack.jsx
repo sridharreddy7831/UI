@@ -97,16 +97,15 @@ export const CardTransformed = React.forwardRef((
     // Creates beautiful 3D layering effect
     const transform = useMotionTemplate`translateZ(${index * incrementZ}px) translateY(${y}) rotate(${rotate}deg)`
 
-    // For ambient lighting / drop shadow (only if light variant)
+    // 🐛 BUG FIX: useMotionTemplate must NEVER be called conditionally — it violates Rules of Hooks.
+    // Always call BOTH hooks, then choose the final value based on the variant prop.
     const dx = useTransform(scrollYProgress, rotateRange, [4, 0])
     const dy = useTransform(scrollYProgress, rotateRange, [4, 12])
     const blur = useTransform(scrollYProgress, rotateRange, [2, 24])
     const alpha = useTransform(scrollYProgress, rotateRange, [0.15, 0.2])
-    
-    // Using a safer CSS fallback for unsupported drop-shadow templating during SSR/Build
-    const filter = variant === "light" 
-        ? useMotionTemplate`drop-shadow(${dx}px ${dy}px ${blur}px rgba(212,175,55,${alpha}))`
-        : "none"
+    // light variant: beautiful gold ambient glow. dark variant: no extra filter.
+    const lightFilter = useMotionTemplate`drop-shadow(${dx}px ${dy}px ${blur}px rgba(212,175,55,${alpha}))`
+    const filter = variant === "light" ? lightFilter : "none"
 
     const cardStyle = {
         top: index * incrementY, 
@@ -116,6 +115,7 @@ export const CardTransformed = React.forwardRef((
         filter,
         ...style,
     }
+
 
     return (
         <motion.div

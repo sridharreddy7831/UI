@@ -13,7 +13,7 @@ import {
     getContactMessages, deleteContactMessage, clearAllMessages, markMessageRead,
     changePassword as apiChangePassword, getToken,
     getShowcases, createShowcase, updateShowcase, deleteShowcase,
-    getCategories, createCategory, updateCategory, deleteCategory, seedCategories
+    getCategories, createCategory, updateCategory, deleteCategory, seedCategories, uploadImage
 } from '../lib/data';
 
 // ── Star Rating Input ────────────────────────────────────────────────────────
@@ -290,12 +290,16 @@ export default function AdminPage() {
     };
 
     // ── Showcases ────────────────────────────────────────────────────────
-    const handleSCImage = (e) => {
+    const handleSCImage = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
-        const reader = new FileReader();
-        reader.onloadend = () => setSCForm(prev => ({ ...prev, image: reader.result }));
-        reader.readAsDataURL(file);
+        try {
+            // Use an info-toast to let the user know upload is happening
+            const { url } = await uploadImage(file);
+            setSCForm(prev => ({ ...prev, image: url }));
+        } catch (err) {
+            alert(`Image upload failed: ${err.message}`);
+        }
     };
 
     const saveShowcase = async (e) => {
@@ -607,7 +611,7 @@ export default function AdminPage() {
 
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
                 {/* Stats */}
-                <div className="grid grid-cols-3 gap-4 mb-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     <div className="bg-zinc-900 border border-white/5 rounded-2xl p-5 flex items-center gap-4">
                         <div className="w-12 h-12 bg-[#D4AF37]/10 border border-[#D4AF37]/20 rounded-xl flex items-center justify-center">
                             <Star size={22} className="text-[#D4AF37]" />

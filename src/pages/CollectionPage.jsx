@@ -115,7 +115,9 @@ const CollectionPage = () => {
                                     <div className="aspect-[16/10] rounded-[2.5rem] overflow-hidden relative border border-white/5 bg-zinc-900 shadow-2xl transition-all duration-700 group-hover:border-[#D4AF37]/30 group-hover:shadow-[0_40px_80px_rgba(0,0,0,0.6)]">
                                         <img 
                                             src={site.image} 
-                                            alt={site.name} 
+                                            alt={site.name}
+                                            loading="lazy"
+                                            decoding="async"
                                             className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-70" />
