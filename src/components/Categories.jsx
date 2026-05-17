@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { getCategories } from '../lib/data';
 
 const TiltCard = ({ category, index, inView }) => {
     const [rotateX, setRotateX] = useState(0);
@@ -88,13 +89,12 @@ const Categories = () => {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-100px" });
     const [categories, setCategories] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(false);
 
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                // We're importing getCategories from data hook, but since Categories 
-                // is not in a route that might be statically checked, let's load it dynamically
-                const { getCategories } = await import('../lib/data');
                 const data = await getCategories();
                 if (data && data.length > 0) {
                     setCategories(data.filter(c => c.visible !== false));
@@ -103,7 +103,10 @@ const Categories = () => {
                 }
             } catch (error) {
                 console.error("Failed to fetch categories:", error);
+                setError(true);
                 setCategories([]);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -148,8 +151,15 @@ const Categories = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {categories.length === 0 ? (
-                        <div className="col-span-full py-20 text-center text-gray-600 font-serif italic">Loading categories...</div>
+                    {loading ? (
+                        <div className="col-span-full py-20 text-center flex flex-col items-center gap-4">
+                            <div className="w-12 h-12 rounded-full border-2 border-[#D4AF37] border-t-transparent animate-spin" />
+                            <p className="text-gray-600 font-serif italic text-lg">Loading beautifully handcrafted collections...</p>
+                        </div>
+                    ) : error ? (
+                        <div className="col-span-full py-20 text-center text-red-500 font-serif">Failed to load categories. Please try again later.</div>
+                    ) : categories.length === 0 ? (
+                        <div className="col-span-full py-20 text-center text-gray-600 font-serif italic">No categories currently available.</div>
                     ) : (
                         categories.map((cat, index) => (
                             <TiltCard key={cat._id || index} category={cat} index={index} inView={isInView} />
