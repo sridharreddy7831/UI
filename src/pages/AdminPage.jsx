@@ -438,9 +438,14 @@ export default function AdminPage() {
 
         if (isOpening && !msg.read) {
             try {
-                const updated = await markMessageRead(id);
-                setMessages(prev => prev.map(m => m._id === id ? updated : m));
-            } catch (err) { console.error('Failed to mark read:', err); }
+                // Optimistically update to prevent disappearing/flickering UI
+                setMessages(prev => prev.map(m => m._id === id ? { ...m, read: true } : m));
+                await markMessageRead(id);
+            } catch (err) { 
+                console.error('Failed to mark read:', err); 
+                // Revert on failure
+                setMessages(prev => prev.map(m => m._id === id ? { ...m, read: false } : m));
+            }
         }
     };
 
