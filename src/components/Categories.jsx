@@ -35,9 +35,22 @@ const TiltCard = ({ category, index, inView }) => {
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
             style={{ perspective: 1000 }}
-            className="relative h-96 w-full group"
+            className={`relative h-96 w-full group ${category.comingSoon ? 'cursor-not-allowed opacity-90' : ''}`}
         >
-            <Link to={`/collections/${category.slug}`} className="block w-full h-full">
+            {category.comingSoon ? (
+                <div className="block w-full h-full cursor-not-allowed">
+                    <CardContent category={category} index={index} inView={inView} rotateX={rotateX} rotateY={rotateY} cardRef={cardRef} handleMouseMove={handleMouseMove} handleMouseLeave={handleMouseLeave} />
+                </div>
+            ) : (
+                <Link to={`/collections/${category.slug}`} className="block w-full h-full">
+                    <CardContent category={category} index={index} inView={inView} rotateX={rotateX} rotateY={rotateY} cardRef={cardRef} handleMouseMove={handleMouseMove} handleMouseLeave={handleMouseLeave} />
+                </Link>
+            )}
+        </motion.div>
+    );
+};
+
+const CardContent = ({ category, index, inView, rotateX, rotateY, cardRef, handleMouseMove, handleMouseLeave }) => (
                 <motion.div
                     ref={cardRef}
                     onMouseMove={handleMouseMove}
@@ -50,15 +63,15 @@ const TiltCard = ({ category, index, inView }) => {
                     }}
                 >
                     {/* Image background */}
-                    <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                        style={{
-                            backgroundImage: `linear-gradient(135deg, rgba(74, 46, 42, 0.3), rgba(180, 138, 46, 0.2)), url('${category.image}')`
-                        }}
+                    <img
+                        src={category.image}
+                        alt={category.title}
+                        loading="lazy"
+                        className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 -z-10"
                     />
 
                     {/* Content overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[rgba(74,46,42,0.8)] from-0% via-transparent via-50% to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[rgba(74,46,42,0.8)] from-0% via-transparent via-50% to-transparent z-0" />
 
                     {/* Card Content */}
                     <div className="absolute inset-0 p-8 flex flex-col justify-end z-10">
@@ -72,18 +85,29 @@ const TiltCard = ({ category, index, inView }) => {
                         </motion.span>
                         <h3 className="text-2xl md:text-3xl font-serif text-white mb-4 leading-tight">{category.title}</h3>
                         <div className="w-12 h-px bg-gradient-to-r from-[#D4AF37] to-transparent mb-4 transition-all duration-300 group-hover:w-20" />
-                        <p className="text-amber-50/90 font-light text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
-                            Explore premium designs →
-                        </p>
+                        {category.comingSoon ? (
+                            <p className="text-amber-50/90 font-light text-sm leading-relaxed transition-opacity duration-300">
+                                Coming Soon ⏳
+                            </p>
+                        ) : (
+                            <p className="text-amber-50/90 font-light text-sm leading-relaxed opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
+                                Explore premium designs →
+                            </p>
+                        )}
                     </div>
+
+                    {category.comingSoon && (
+                        <div className="absolute top-4 right-4 z-20">
+                            <span className="bg-black/50 backdrop-blur-sm border border-white/20 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
+                                Coming Soon
+                            </span>
+                        </div>
+                    )}
 
                     {/* Shine effect overlay */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                 </motion.div>
-            </Link>
-        </motion.div>
-    );
-};
+);
 
 const Categories = () => {
     const ref = useRef(null);

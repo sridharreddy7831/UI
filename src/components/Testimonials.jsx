@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar';
 import { getTestimonials } from '../lib/data';
 import { ContainerScroll, CardsContainer, CardTransformed, ReviewStars } from './ui/animated-cards-stack';
+import Counter from './ui/Counter';
 
 const Testimonials = () => {
     const [testimonials, setTestimonials] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [currentIndex, setCurrentIndex] = useState(0);
 
     const fetchTestimonials = () =>
         getTestimonials()
             .then(data => {
-                // Ensure we only show the absolute latest 5 stories for maximum impact
                 setTestimonials(data.slice(-5).reverse());
             })
             .catch(console.error)
@@ -22,6 +23,14 @@ const Testimonials = () => {
         window.addEventListener('testimonialsUpdated', fetchTestimonials);
         return () => window.removeEventListener('testimonialsUpdated', fetchTestimonials);
     }, []);
+
+    const handleNext = () => {
+        setCurrentIndex(prev => (prev + 1) % testimonials.length);
+    };
+
+    const handlePrev = () => {
+        setCurrentIndex(prev => (prev - 1 + testimonials.length) % testimonials.length);
+    };
 
     if (loading) return (
         <section id="testimonials" className="relative py-24 overflow-hidden" style={{
@@ -36,7 +45,7 @@ const Testimonials = () => {
         </section>
     );
 
-    if (testimonials.length === 0) return null; // Hide section if no testimonials
+    if (testimonials.length === 0) return null;
 
     const premiumInfoBlock = (
         <div className="space-y-8 md:space-y-10">
@@ -71,7 +80,7 @@ const Testimonials = () => {
                     "Every celebration deserves an introduction as beautiful as the moment itself. We craft digital invitations that make your guests feel the magic before the event begins."
                 </p>
                 <div className="flex items-center gap-4 mt-8 pt-6 border-t border-[#D4AF37]/20">
-                    <img src="/logo.png" alt="Uthsav Studio" className="h-10 w-auto object-contain drop-shadow-md" />
+                    <img src="/logo.png" alt="Uthsav Studio Logo" className="h-10 w-auto object-contain drop-shadow-md" />
                     <div>
                         <span className="block text-[#D4AF37] text-sm uppercase tracking-widest font-bold">Uthsav Studio</span>
                         <span className="block text-gray-500 text-xs tracking-wider">PREMIUM DESIGNS</span>
@@ -94,7 +103,9 @@ const Testimonials = () => {
                         transition={{ delay: 0.3 + (i * 0.1) }}
                         className="premium-card premium-card-lavender rounded-xl md:rounded-2xl p-3 md:p-6 text-center shadow-sm"
                     >
-                        <div className="text-lg md:text-3xl font-serif font-black text-[#D4AF37] drop-shadow-sm">{stat.value}</div>
+                        <div className="text-lg md:text-3xl font-serif font-black text-[#D4AF37] drop-shadow-sm">
+                            <Counter value={stat.value} />
+                        </div>
                         <div className="text-gray-500 text-[9px] md:text-xs uppercase tracking-widest font-semibold mt-1 md:mt-2">
                             {stat.label}
                         </div>
@@ -144,24 +155,53 @@ const Testimonials = () => {
                 </ContainerScroll>
             </div>
 
-            {/* ====== MOBILE LAYOUT (Smooth Upward Card Flow) ====== */}
-            {/* Resolves crashing constraints by restoring native vertical scaling purely for mobile */}
+            {/* ====== MOBILE LAYOUT (Swipeable Carousel) ====== */}
             <div className="block md:hidden container mx-auto px-6 py-16 relative z-10 overflow-hidden">
                 {premiumInfoBlock}
 
-                <div className="mt-16 flex flex-col items-center gap-8 w-full relative">
-                    {testimonials.map((test, index) => (
-                        <motion.div
-                            key={test._id || index}
-                            initial={{ opacity: 0, y: 60, scale: 0.95 }}
-                            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                            viewport={{ once: true, margin: "-40px" }}
-                            transition={{ duration: 0.6, delay: 0.1, type: "spring" }}
-                            className="w-full relative flex flex-col items-center justify-center gap-6 rounded-[2rem] border border-[#D4AF37]/40 bg-white/95 p-8 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.1)] backdrop-blur-md"
+                <div className="mt-16 relative w-full flex flex-col items-center gap-6">
+                    <div className="relative w-full h-[320px] sm:h-[280px]">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={currentIndex}
+                                initial={{ opacity: 0, x: 50, scale: 0.95 }}
+                                animate={{ opacity: 1, x: 0, scale: 1 }}
+                                exit={{ opacity: 0, x: -50, scale: 0.95 }}
+                                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                                className="absolute inset-0 w-full flex flex-col items-center justify-center gap-6 rounded-[2rem] border border-[#D4AF37]/40 bg-white/95 p-8 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.1)] backdrop-blur-md"
+                            >
+                                <CardInnerContent test={testimonials[currentIndex]} />
+                            </motion.div>
+                        </AnimatePresence>
+                    </div>
+
+                    {/* Carousel Controls */}
+                    <div className="flex items-center justify-center gap-6 mt-4 z-20">
+                        <button 
+                            onClick={handlePrev}
+                            className="w-10 h-10 rounded-full border border-[#D4AF37]/30 bg-white/50 text-[#D4AF37] flex items-center justify-center hover:bg-[#D4AF37] hover:text-white transition-all duration-300 cursor-pointer"
+                            aria-label="Previous story"
                         >
-                            <CardInnerContent test={test} />
-                        </motion.div>
-                    ))}
+                            &larr;
+                        </button>
+                        <div className="flex gap-2">
+                            {testimonials.map((_, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => setCurrentIndex(i)}
+                                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 cursor-pointer ${currentIndex === i ? 'bg-[#D4AF37] w-6' : 'bg-[#D4AF37]/30'}`}
+                                    aria-label={`Go to slide ${i + 1}`}
+                                />
+                            ))}
+                        </div>
+                        <button 
+                            onClick={handleNext}
+                            className="w-10 h-10 rounded-full border border-[#D4AF37]/30 bg-white/50 text-[#D4AF37] flex items-center justify-center hover:bg-[#D4AF37] hover:text-white transition-all duration-300 cursor-pointer"
+                            aria-label="Next story"
+                        >
+                            &rarr;
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -169,7 +209,6 @@ const Testimonials = () => {
     );
 };
 
-// Extracted inner layout of the actual card so it flawlessly renders exactly the same on Desktop 3D Stack and Mobile Vertical Flow
 const CardInnerContent = ({ test }) => (
     <>
         {/* Rating Badge */}
@@ -203,7 +242,7 @@ const CardInnerContent = ({ test }) => (
             </div>
         </div>
         
-        {/* Ambient Card Glow for extreme luxury finish */}
+        {/* Ambient Card Glow */}
         <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-[#D4AF37]/5 to-transparent rounded-[2rem] pointer-events-none" />
     </>
 );

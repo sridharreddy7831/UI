@@ -196,5 +196,11 @@ export const updateCategory = (id, data) =>
 export const deleteCategory = (id) =>
     authFetch(`${BASE}/categories/${id}`, { method: 'DELETE' });
 
+export const reorderCategories = (orderedIds) =>
+    authFetch(`${BASE}/categories/reorder`, {
+        method: 'PATCH',
+        body: JSON.stringify({ orderedIds }),
+    });
+
 export const seedCategories = () =>
     authFetch(`${BASE}/categories/seed`, { method: 'POST' });

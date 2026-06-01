@@ -70,51 +70,99 @@ const PortfolioPage = () => {
                                 viewport={{ once: true }}
                                 transition={{ delay: i * 0.1, duration: 0.6 }}
                             >
-                                <Link
-                                    to={`/collections/${cat.slug}`}
-                                    className="group relative block h-96 rounded-3xl overflow-hidden transition-all duration-500"
-                                    style={{
-                                        border: '1.5px solid rgba(212, 175, 55, 0.2)',
-                                        boxShadow: '0 10px 40px rgba(212, 175, 55, 0.08)',
-                                    }}
-                                    onMouseEnter={e => {
-                                        e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
-                                        e.currentTarget.style.boxShadow = '0 20px 60px rgba(212, 175, 55, 0.15)';
-                                        e.currentTarget.style.transform = 'translateY(-8px)';
-                                    }}
-                                    onMouseLeave={e => {
-                                        e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.2)';
-                                        e.currentTarget.style.boxShadow = '0 10px 40px rgba(212, 175, 55, 0.08)';
-                                        e.currentTarget.style.transform = 'translateY(0)';
-                                    }}
-                                >
-                                    {/* Background image */}
+                                {cat.comingSoon ? (
                                     <div
-                                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                        className="group relative block h-96 rounded-3xl overflow-hidden transition-all duration-500 cursor-not-allowed opacity-90"
                                         style={{
-                                            backgroundImage: `linear-gradient(to bottom, rgba(255,248,242,0.05), rgba(74,46,42,0.85)), url('${cat.image}')`
+                                            border: '1.5px solid rgba(212, 175, 55, 0.2)',
+                                            boxShadow: '0 10px 40px rgba(212, 175, 55, 0.08)',
                                         }}
-                                    />
+                                    >
+                                        {/* Background image */}
+                                        <div
+                                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
+                                            style={{
+                                                backgroundImage: `linear-gradient(to bottom, rgba(255,248,242,0.05), rgba(74,46,42,0.85)), url('${cat.image}')`
+                                            }}
+                                        />
 
-                                    {/* Content */}
-                                    <div className="absolute inset-0 p-8 flex flex-col justify-end">
-                                        <p className="text-[10px] uppercase tracking-[0.3em] mb-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0"
-                                            style={{ color: '#D4AF37', fontFamily: 'var(--font-sans)' }}>
-                                            Bespoke Collection
-                                        </p>
-                                        <h3 className="text-2xl text-white mb-2" style={{ fontFamily: 'var(--font-serif)' }}>{cat.title}</h3>
-                                        <div className="w-0 h-[2px] transition-all duration-300 group-hover:w-16 mb-3" style={{ backgroundColor: '#D4AF37', boxShadow: '0 0 10px rgba(212, 175, 55, 0.8)' }} />
-                                        <p className="text-sm line-clamp-2 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-500" style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-sans)' }}>
-                                            {cat.subtitle || cat.description}
-                                        </p>
-                                        <div className="flex items-center gap-2 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0" style={{ color: '#D4AF37' }}>
-                                            View Collection <ArrowRight size={16} />
+                                        {/* Badge */}
+                                        <div className="absolute top-4 right-4 z-20">
+                                            <span className="bg-[#4A2E2A]/70 backdrop-blur-sm border border-white/10 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
+                                                ⏳ Coming Soon
+                                            </span>
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                                            <p className="text-[10px] uppercase tracking-[0.3em] mb-2"
+                                                style={{ color: '#D4AF37', fontFamily: 'var(--font-sans)' }}>
+                                                Bespoke Collection
+                                            </p>
+                                            <h3 className="text-2xl text-white mb-2" style={{ fontFamily: 'var(--font-serif)' }}>{cat.title}</h3>
+                                            <div className="w-16 h-[2px] mb-3" style={{ backgroundColor: '#D4AF37', boxShadow: '0 0 10px rgba(212, 175, 55, 0.8)' }} />
+                                            <p className="text-sm line-clamp-2 mb-4" style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-sans)' }}>
+                                                {cat.subtitle || cat.description}
+                                            </p>
+                                            <div className="flex items-center gap-2 text-sm font-medium text-[#D4AF37]">
+                                                Coming Soon ⏳
+                                            </div>
                                         </div>
                                     </div>
+                                ) : (
+                                    <Link
+                                        to={`/collections/${cat.slug}`}
+                                        className="group relative block h-96 rounded-3xl overflow-hidden transition-all duration-500"
+                                        style={{
+                                            border: '1.5px solid rgba(212, 175, 55, 0.2)',
+                                            boxShadow: '0 10px 40px rgba(212, 175, 55, 0.08)',
+                                        }}
+                                        onMouseEnter={e => {
+                                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+                                            e.currentTarget.style.boxShadow = '0 20px 60px rgba(212, 175, 55, 0.15)';
+                                            e.currentTarget.style.transform = 'translateY(-8px)';
+                                        }}
+                                        onMouseLeave={e => {
+                                            e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.2)';
+                                            e.currentTarget.style.boxShadow = '0 10px 40px rgba(212, 175, 55, 0.08)';
+                                            e.currentTarget.style.transform = 'translateY(0)';
+                                        }}
+                                    >
+                                        {/* Background image */}
+                                        <div
+                                            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
+                                            style={{
+                                                backgroundImage: `linear-gradient(to bottom, rgba(255,248,242,0.05), rgba(74,46,42,0.85)), url('${cat.image}')`
+                                            }}
+                                        />
 
-                                    {/* Shine overlay */}
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                                </Link>
+                                        {/* Badge */}
+                                        <div className="absolute top-4 right-4 z-20">
+                                            <span className="bg-emerald-600/70 backdrop-blur-sm border border-emerald-400/20 text-white text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
+                                                ✅ Live
+                                            </span>
+                                        </div>
+
+                                        {/* Content */}
+                                        <div className="absolute inset-0 p-8 flex flex-col justify-end">
+                                            <p className="text-[10px] uppercase tracking-[0.3em] mb-2 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0"
+                                                style={{ color: '#D4AF37', fontFamily: 'var(--font-sans)' }}>
+                                                Bespoke Collection
+                                            </p>
+                                            <h3 className="text-2xl text-white mb-2" style={{ fontFamily: 'var(--font-serif)' }}>{cat.title}</h3>
+                                            <div className="w-0 h-[2px] transition-all duration-300 group-hover:w-16 mb-3" style={{ backgroundColor: '#D4AF37', boxShadow: '0 0 10px rgba(212, 175, 55, 0.8)' }} />
+                                            <p className="text-sm line-clamp-2 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-500" style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-sans)' }}>
+                                                {cat.subtitle || cat.description}
+                                            </p>
+                                            <div className="flex items-center gap-2 text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-500 translate-y-4 group-hover:translate-y-0" style={{ color: '#D4AF37' }}>
+                                                View Collection <ArrowRight size={16} />
+                                            </div>
+                                        </div>
+
+                                        {/* Shine overlay */}
+                                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                    </Link>
+                                )}
                             </motion.div>
                         ))}
                     </div>

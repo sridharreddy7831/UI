@@ -3,6 +3,13 @@ import { motion } from 'framer-motion';
 import { Check, X } from 'lucide-react';
 
 const Comparison = () => {
+    // Spring physics configuration for luxury feel
+    const springTransition = {
+        type: "spring",
+        stiffness: 300,
+        damping: 22
+    };
+
     return (
         <section className="bg-white py-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden" id="comparison" style={{
             background: 'linear-gradient(135deg, rgba(217, 194, 240, 0.15) 0%, rgba(253, 230, 220, 0.15) 100%)'
@@ -31,9 +38,16 @@ const Comparison = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, ease: "easeOut" }}
-                        className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4A2E2A] tracking-wide leading-tight"
+                        className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#4A2E2A] tracking-wide leading-tight relative inline-block pb-4"
                     >
                         Paper <span className="text-[#D4AF37]">vs</span> Digital Invitations
+                        <motion.span 
+                            initial={{ width: 0 }}
+                            whileInView={{ width: "80%" }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                            className="absolute bottom-0 left-[10%] h-[2px] bg-[#D4AF37]"
+                        />
                     </motion.h2>
                     <motion.p
                         initial={{ opacity: 0, y: 20 }}
@@ -54,7 +68,9 @@ const Comparison = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                        className="premium-card premium-card-blush"
+                        whileHover={{ y: -8, scale: 1.015, boxShadow: "0 25px 50px rgba(74, 46, 42, 0.08)" }}
+                        style={{ transition: 'border-color 300ms, box-shadow 300ms' }}
+                        className="premium-card premium-card-blush cursor-pointer"
                     >
                         <div className="mb-8 pb-8 border-b border-gray-300/30">
                             <h3 className="text-2xl font-serif text-[#4A2E2A] mb-2">Paper Invitations</h3>
@@ -94,10 +110,12 @@ const Comparison = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.8, delay: 0.3, ease: "easeOut" }}
-                        className="relative premium-card"
+                        whileHover={{ y: -8, scale: 1.015, boxShadow: "0 25px 50px rgba(212, 175, 55, 0.18)" }}
+                        className="relative premium-card cursor-pointer"
                         style={{
                             background: 'linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(230, 183, 169, 0.1) 100%)',
-                            border: '2px solid #D4AF37'
+                            border: '2px solid #D4AF37',
+                            transition: 'border-color 300ms, box-shadow 300ms'
                         }}
                     >
                         {/* Badge */}
@@ -142,7 +160,7 @@ const Comparison = () => {
                                 <span className="text-[#D4AF37] text-xs tracking-widest font-medium">FROM JUST</span>
                                 <div className="text-right">
                                     <span className="block text-gray-600 text-xs tracking-wider mb-1">Starting at</span>
-                                    <span className="block text-4xl font-serif text-[#D4AF37]">₹599</span>
+                                    <span className="block text-4xl font-serif text-[#D4AF37]">₹999</span>
                                 </div>
                             </div>
                         </div>
@@ -182,11 +200,11 @@ const Comparison = () => {
                             <div className="bg-gradient-to-b from-[#F8D7E8]/20 to-[#FDE6DC]/20 rounded-lg p-6 -m-6">
                                 <h4 className="text-sm font-medium text-[#D4AF37] tracking-widest mb-6">DIGITAL</h4>
                                 <div className="space-y-4">
-                                    <Check size={20} className="text-[#D4AF37] mx-auto" />
-                                    <Check size={20} className="text-[#D4AF37] mx-auto" />
-                                    <Check size={20} className="text-[#D4AF37] mx-auto" />
-                                    <Check size={20} className="text-[#D4AF37] mx-auto" />
-                                    <Check size={20} className="text-[#D4AF37] mx-auto" />
+                                    <Check size={20} className="text-[#D4AF37] mx-auto animate-pulse" />
+                                    <Check size={20} className="text-[#D4AF37] mx-auto animate-pulse" />
+                                    <Check size={20} className="text-[#D4AF37] mx-auto animate-pulse" />
+                                    <Check size={20} className="text-[#D4AF37] mx-auto animate-pulse" />
+                                    <Check size={20} className="text-[#D4AF37] mx-auto animate-pulse" />
                                 </div>
                             </div>
                         </div>

@@ -4,7 +4,7 @@ import {
     Users, MessageSquare, Plus, Trash2, Edit3, Save, X,
     Star, LogIn, LogOut, Eye, EyeOff, RefreshCw, ChevronDown,
     Loader2, Lock, Mail, ShieldCheck, KeyRound,
-    Image as ImageIcon, ExternalLink, Filter, FolderOpen
+    Image as ImageIcon, ExternalLink, Filter, FolderOpen, GripVertical
 } from 'lucide-react';
 import {
     login as apiLogin, logout as apiLogout, getMe,
@@ -13,7 +13,8 @@ import {
     getContactMessages, deleteContactMessage, clearAllMessages, markMessageRead,
     changePassword as apiChangePassword, getToken,
     getShowcases, createShowcase, updateShowcase, deleteShowcase,
-    getCategories, createCategory, updateCategory, deleteCategory, seedCategories, uploadImage
+    getCategories, createCategory, updateCategory, deleteCategory, seedCategories, uploadImage,
+    reorderCategories
 } from '../lib/data';
 
 // ── Star Rating Input ────────────────────────────────────────────────────────
@@ -163,7 +164,7 @@ export default function AdminPage() {
     const [expandedMsg, setExpandedMsg] = useState(null);
     // Categories state
     const [apiCategories, setApiCategories] = useState([]);
-    const [catForm, setCatForm] = useState({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '' });
+    const [catForm, setCatForm] = useState({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '', comingSoon: false });
     const [editingCat, setEditingCat] = useState(null);
     const [toast, setToast] = useState(null); // { message, type }
 
@@ -357,7 +358,7 @@ export default function AdminPage() {
                 await createCategory(catForm);
                 showToast('Category created!');
             }
-            setCatForm({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '' });
+            setCatForm({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '', comingSoon: false });
             setEditingCat(null);
             refreshData();
         } catch (err) { showToast(err.message, 'error'); }
@@ -993,7 +994,7 @@ export default function AdminPage() {
                         <div className="flex items-center justify-between mb-8">
                             <div>
                                 <h2 className="text-2xl font-serif">Categories Management</h2>
-                                <p className="text-zinc-500 text-sm mt-1">Add, edit, or remove invitation categories.</p>
+                            <p className="text-zinc-500 text-sm mt-1">Drag cards to reorder. Changes save automatically.</p>
                             </div>
                             <div className="flex gap-2">
                                 {apiCategories.length === 0 && (
@@ -1003,7 +1004,7 @@ export default function AdminPage() {
                                 )}
                                 <button onClick={() => {
                                     setEditingCat(null);
-                                    setCatForm({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '' });
+                                    setCatForm({ title: '', slug: '', image: '', heroImage: '', subtitle: '', description: '', comingSoon: false });
                                     setTab('categories-form');
                                 }} className="flex items-center gap-2 px-4 py-2 bg-[#D4AF37] text-zinc-950 font-bold rounded-xl hover:bg-[#c9a227] transition-all text-sm">
                                     <Plus size={16} /> Add Category
@@ -1011,35 +1012,112 @@ export default function AdminPage() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {apiCategories.map(cat => (
-                                <motion.div key={cat._id} layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-zinc-900 border border-white/5 rounded-2xl overflow-hidden group hover:border-[#D4AF37]/30 transition-all">
-                                    <div className="aspect-video relative overflow-hidden bg-zinc-800">
-                                        {cat.image ? (
-                                            <img src={cat.image} alt={cat.title} className="w-full h-full object-cover transition-transform group-hover:scale-105" />
-                                        ) : (
-                                            <div className="flex items-center justify-center h-full text-zinc-700"><ImageIcon size={48} /></div>
-                                        )}
-                                        <div className="absolute top-2 right-2 flex gap-1 transform translate-y-[-10px] opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all">
-                                            <button onClick={() => {
-                                                setEditingCat(cat._id);
-                                                setCatForm(cat);
-                                                setTab('categories-form');
-                                            }} className="p-2 bg-zinc-900/80 backdrop-blur-sm rounded-lg text-white hover:text-[#D4AF37]"><Edit3 size={14} /></button>
-                                            <button onClick={() => deleteCategoryFn(cat._id)} className="p-2 bg-red-500/80 backdrop-blur-sm rounded-lg text-white hover:bg-red-500"><Trash2 size={14} /></button>
-                                        </div>
+                        <div className="space-y-3">
+                            {apiCategories.map((cat, index) => (
+                                <motion.div
+                                    key={cat._id}
+                                    layout
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    draggable
+                                    onDragStart={(e) => {
+                                        e.dataTransfer.effectAllowed = 'move';
+                                        e.dataTransfer.setData('text/plain', index.toString());
+                                        e.currentTarget.style.opacity = '0.4';
+                                    }}
+                                    onDragEnd={(e) => {
+                                        e.currentTarget.style.opacity = '1';
+                                    }}
+                                    onDragOver={(e) => {
+                                        e.preventDefault();
+                                        e.dataTransfer.dropEffect = 'move';
+                                        e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)';
+                                    }}
+                                    onDragLeave={(e) => {
+                                        e.currentTarget.style.borderColor = '';
+                                    }}
+                                    onDrop={async (e) => {
+                                        e.preventDefault();
+                                        e.currentTarget.style.borderColor = '';
+                                        const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+                                        const toIndex = index;
+                                        if (fromIndex === toIndex) return;
+                                        const reordered = [...apiCategories];
+                                        const [moved] = reordered.splice(fromIndex, 1);
+                                        reordered.splice(toIndex, 0, moved);
+                                        setApiCategories(reordered);
+                                        try {
+                                            const updated = await reorderCategories(reordered.map(c => c._id));
+                                            setApiCategories(updated);
+                                            showToast('Order saved!');
+                                        } catch (err) {
+                                            showToast(err.message, 'error');
+                                            refreshData();
+                                        }
+                                    }}
+                                    className="bg-zinc-900 border-2 border-white/5 rounded-2xl overflow-hidden group hover:border-[#D4AF37]/30 transition-all flex"
+                                >
+                                    {/* Drag handle */}
+                                    <div className="flex items-center px-3 cursor-grab active:cursor-grabbing bg-zinc-800/50 border-r border-white/5 hover:bg-zinc-700/50 transition-colors">
+                                        <GripVertical size={20} className="text-zinc-600 group-hover:text-[#D4AF37]/60" />
                                     </div>
-                                    <div className="p-5">
-                                        <h4 className="font-serif text-white text-lg mb-1">{cat.title}</h4>
-                                        <div className="text-[10px] text-[#D4AF37] font-mono mb-3 bg-[#D4AF37]/10 px-2 py-0.5 rounded-full inline-block">
-                                            /{cat.slug}
+
+                                    {/* Thumbnail */}
+                                    <div className="w-32 h-24 flex-shrink-0 relative overflow-hidden bg-zinc-800">
+                                        {cat.image ? (
+                                            <img src={cat.image} alt={cat.title} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="flex items-center justify-center h-full text-zinc-700"><ImageIcon size={24} /></div>
+                                        )}
+                                    </div>
+
+                                    {/* Info */}
+                                    <div className="flex-1 p-4 flex items-center justify-between min-w-0">
+                                        <div className="min-w-0">
+                                            <div className="flex items-center gap-3 mb-1">
+                                                <span className="text-zinc-600 text-xs font-mono">#{index + 1}</span>
+                                                <h4 className="font-serif text-white text-base truncate">{cat.title}</h4>
+                                                <div className="text-[10px] text-[#D4AF37] font-mono bg-[#D4AF37]/10 px-2 py-0.5 rounded-full flex-shrink-0">
+                                                    /{cat.slug}
+                                                </div>
+                                            </div>
+                                            <p className="text-zinc-500 text-xs truncate">{cat.description || cat.subtitle}</p>
                                         </div>
-                                        <p className="text-zinc-500 text-xs line-clamp-2">{cat.description || cat.subtitle}</p>
+
+                                        <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+                                            {/* Coming Soon toggle */}
+                                            <button
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
+                                                    try {
+                                                        await updateCategory(cat._id, { comingSoon: !cat.comingSoon });
+                                                        showToast(cat.comingSoon ? 'Category is now live!' : 'Marked as Coming Soon');
+                                                        refreshData();
+                                                    } catch (err) { showToast(err.message, 'error'); }
+                                                }}
+                                                className={`text-[10px] font-bold px-2.5 py-1 rounded-full transition-all whitespace-nowrap ${
+                                                    cat.comingSoon
+                                                        ? 'bg-[#D4AF37] text-zinc-900'
+                                                        : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/20'
+                                                }`}
+                                            >
+                                                {cat.comingSoon ? '⏳ Coming Soon' : '✅ Live'}
+                                            </button>
+                                            {/* Edit */}
+                                            <button onClick={(e) => {
+                                                e.stopPropagation();
+                                                setEditingCat(cat._id);
+                                                setCatForm({ title: cat.title || '', slug: cat.slug || '', image: cat.image || '', heroImage: cat.heroImage || '', subtitle: cat.subtitle || '', description: cat.description || '', comingSoon: !!cat.comingSoon });
+                                                setTab('categories-form');
+                                            }} className="p-2 bg-zinc-800 rounded-lg text-zinc-400 hover:text-[#D4AF37] transition-colors"><Edit3 size={14} /></button>
+                                            {/* Delete */}
+                                            <button onClick={(e) => { e.stopPropagation(); deleteCategoryFn(cat._id); }} className="p-2 bg-zinc-800 rounded-lg text-zinc-400 hover:text-red-400 transition-colors"><Trash2 size={14} /></button>
+                                        </div>
                                     </div>
                                 </motion.div>
                             ))}
                             {apiCategories.length === 0 && (
-                                <div className="col-span-full py-20 text-center border-2 border-dashed border-white/5 rounded-3xl bg-zinc-900/50">
+                                <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-3xl bg-zinc-900/50">
                                     <FolderOpen className="mx-auto mb-4 text-zinc-600" size={40} />
                                     <p className="text-zinc-400 font-serif mb-2">No categories found.</p>
                                     <p className="text-zinc-600 text-sm">Seed defaults or create a new one to get started.</p>
@@ -1138,6 +1216,21 @@ export default function AdminPage() {
                                     placeholder="Describe this category of invitations..."
                                     className="w-full bg-zinc-900 border border-white/5 rounded-xl px-4 py-3 text-white focus:border-[#D4AF37] outline-none transition-all placeholder:text-zinc-700 resize-none"
                                 />
+                            </div>
+
+                            <div>
+                                <label className="flex items-center gap-3 cursor-pointer p-4 border border-white/5 bg-zinc-900 rounded-xl hover:border-[#D4AF37]/30 transition-all">
+                                    <input
+                                        type="checkbox"
+                                        checked={catForm.comingSoon}
+                                        onChange={e => setCatForm({ ...catForm, comingSoon: e.target.checked })}
+                                        className="w-5 h-5 accent-[#D4AF37] rounded border-white/10 bg-zinc-800"
+                                    />
+                                    <div>
+                                        <div className="text-sm text-white font-medium">Mark as "Coming Soon"</div>
+                                        <div className="text-xs text-zinc-500">Users won't be able to click this category, but it will be visible with a badge.</div>
+                                    </div>
+                                </label>
                             </div>
 
                             <div className="pt-6 flex gap-4 border-t border-white/5">

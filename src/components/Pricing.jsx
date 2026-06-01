@@ -2,11 +2,18 @@ import React from 'react';
 import { CreativePricing } from "./ui/creative-pricing";
 import { Sparkles, Star, Crown } from "lucide-react";
 
+const handleTierSelection = (tierName, price) => {
+    const phoneNumber = "917386376302";
+    const message = `Hello Uthsav Invitations! I am interested in creating a digital invitation using the ${tierName} Package (₹${price}).`;
+    const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+};
+
 const sampleTiers = [
     {
         name: "Essential",
         icon: <Star className="w-6 h-6" />,
-        price: "4,999",
+        price: "999",
         description: "Perfect for beautifully simple, elegant standard celebrations.",
         color: "amber",
         features: [
@@ -16,11 +23,12 @@ const sampleTiers = [
             "RSVP Link Integration",
             "Delivery within 3 Days",
         ],
+        onClick: () => handleTierSelection("Essential", "999")
     },
     {
         name: "Premium",
         icon: <Sparkles className="w-6 h-6" />,
-        price: "9,999",
+        price: "1,499",
         description: "For beautifully bespoke celebrations that demand a unique touch.",
         color: "amber",
         features: [
@@ -32,11 +40,12 @@ const sampleTiers = [
             "Priority 48-Hour Delivery",
         ],
         popular: true,
+        onClick: () => handleTierSelection("Premium", "1,499")
     },
     {
         name: "Royal Custom",
         icon: <Crown className="w-6 h-6" />,
-        price: "24,999",
+        price: "1,999",
         description: "The ultimate luxury cinematic experience crafted purely from scratch.",
         color: "amber",
         features: [
@@ -47,6 +56,7 @@ const sampleTiers = [
             "Unlimited Revisions",
             "Dedicated Support Manager",
         ],
+        onClick: () => handleTierSelection("Royal Custom", "1,999")
     },
 ];
 

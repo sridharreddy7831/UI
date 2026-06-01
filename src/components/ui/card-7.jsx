@@ -31,21 +31,41 @@ const TravelCard = React.forwardRef(
         )}
         {...props}
       >
-        {siteUrl && siteUrl !== '#' && siteUrl !== '' ? (
-          <div className="absolute inset-0 h-full w-full overflow-hidden">
-             {/* The iframe serves the live website */}
-             <iframe
-                src={siteUrl}
-                title={title}
-                className="w-full h-full border-none"
-             />
+        <img
+          src={imageUrl}
+          alt={imageAlt}
+          className={cn(
+            "absolute inset-0 h-full w-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110",
+            siteUrl && siteUrl !== '#' && siteUrl !== '' && "scale-105 blur-md opacity-40"
+          )}
+        />
+
+        {siteUrl && siteUrl !== '#' && siteUrl !== '' && (
+          <div className="absolute inset-0 flex items-center justify-center p-4 z-0 pointer-events-none">
+             {/* Mobile device mockup */}
+             <div className="relative w-[220px] h-[450px] bg-neutral-900 rounded-[2.5rem] p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.4)] border border-neutral-700/50 transition-all duration-700 group-hover:rotate-2 group-hover:scale-105 group-hover:shadow-[0_30px_60px_rgba(0,0,0,0.6)]">
+                {/* Screen */}
+                <div className="w-full h-full bg-white rounded-[2rem] overflow-hidden relative">
+                   {/* Dynamic Island / Notch */}
+                   <div className="absolute top-2 left-1/2 -translate-x-1/2 w-16 h-4 bg-neutral-900 rounded-full z-20"></div>
+                   
+                   {/* Overlay to block touch/scroll from iframe, but allow page scrolling */}
+                   <div className="absolute inset-0 z-10 pointer-events-none bg-transparent"></div>
+                   
+                   <iframe
+                      src={siteUrl}
+                      title={title}
+                      className="absolute top-0 left-0 border-none pointer-events-none origin-top-left bg-white"
+                      style={{
+                         width: '375px',
+                         height: '812px',
+                         transform: 'scale(0.554)', // (220 - 12) = 208 width / 375 = 0.554
+                      }}
+                      tabIndex={-1}
+                   />
+                </div>
+             </div>
           </div>
-        ) : (
-          <img
-            src={imageUrl}
-            alt={imageAlt}
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-110"
-          />
         )}
 
         <div className="absolute inset-0 pointer-events-none bg-gradient-to-t from-[#2d1b19] via-[#2d1b19]/70 to-transparent transition-opacity duration-500 opacity-80 group-hover:opacity-95"></div>
@@ -79,7 +99,7 @@ const TravelCard = React.forwardRef(
                 <span className="text-[#D4AF37] font-bold text-sm tracking-widest uppercase"> {pricePeriod}</span>
               </div>
               <Button onClick={(e) => { e.preventDefault(); onBookNow(); }} size="lg" className="pointer-events-auto bg-[#D4AF37] text-[#2d1b19] font-bold hover:bg-[#B68A2E] hover:text-white shadow-[0_8px_25px_rgba(212,175,55,0.3)] rounded-xl group/btn min-w-[140px] border-none transition-all">
-                View Full <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
+                Open Invitation <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1" />
               </Button>
             </div>
           </div>

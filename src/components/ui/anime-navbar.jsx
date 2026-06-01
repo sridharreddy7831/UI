@@ -180,10 +180,28 @@ function MobileRadialNavBar({ items, activeTab, setActiveTab, hoveredTab, setHov
 
                         {/* Menu Sheet */}
                         <motion.div
-                            initial={{ y: -400, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            exit={{ y: -400, opacity: 0 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            variants={{
+                                hidden: { opacity: 0, y: -400 },
+                                visible: {
+                                    opacity: 1,
+                                    y: 0,
+                                    transition: {
+                                        type: "spring",
+                                        stiffness: 300,
+                                        damping: 30,
+                                        staggerChildren: 0.04,
+                                        delayChildren: 0.08
+                                    }
+                                },
+                                exit: {
+                                    y: -400,
+                                    opacity: 0,
+                                    transition: { duration: 0.25 }
+                                }
+                            }}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
                             className="fixed top-20 right-4 z-[9999] w-80 rounded-2xl bg-white/95 backdrop-blur-xl shadow-2xl border border-white/20 overflow-hidden"
                         >
                             {/* Menu items */}
@@ -194,6 +212,10 @@ function MobileRadialNavBar({ items, activeTab, setActiveTab, hoveredTab, setHov
 
                                     return (
                                         <motion.a
+                                            variants={{
+                                                hidden: { opacity: 0, x: -15 },
+                                                visible: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
+                                            }}
                                             key={item.name}
                                             href={item.url}
                                             onClick={(e) => handleNavClick(e, item.url, item.section, () => {

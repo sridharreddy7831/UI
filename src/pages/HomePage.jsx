@@ -7,8 +7,10 @@ import Hero from '../components/Hero';
 import About from '../components/About';
 import Categories from '../components/Categories';
 import Comparison from '../components/Comparison';
+import Pricing from '../components/Pricing';
 import HowItWorks from '../components/HowItWorks';
 import Testimonials from '../components/Testimonials';
+import Faq from '../components/Faq';
 import CallToAction from '../components/CallToAction';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
@@ -16,13 +18,13 @@ import PageLoader from '../components/ui/page-loader';
 
 gsap.registerPlugin(ScrollTrigger);
 
-// Section fade-in wrapper using Framer Motion
+// Premium Blur to Sharp Fade-in Scroll Reveal wrapper
 const SectionReveal = ({ children, delay = 0 }) => (
   <motion.div
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
+    initial={{ opacity: 0, y: 40, filter: 'blur(6px)' }}
+    whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
     viewport={{ once: true, margin: '-80px' }}
-    transition={{ duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] }}
+    transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
   >
     {children}
   </motion.div>
@@ -66,8 +68,14 @@ function HomePage() {
             </SectionReveal>
 
             <SectionReveal delay={0}>
-              <div id="pricing">
+              <div id="why-us">
                 <Comparison />
+              </div>
+            </SectionReveal>
+
+            <SectionReveal delay={0}>
+              <div id="pricing">
+                <Pricing />
               </div>
             </SectionReveal>
 
@@ -80,6 +88,12 @@ function HomePage() {
             <div id="testimonials">
               <Testimonials />
             </div>
+
+            <SectionReveal delay={0}>
+              <div id="faq">
+                <Faq />
+              </div>
+            </SectionReveal>
 
             <SectionReveal delay={0}>
               <CallToAction />

@@ -14,8 +14,6 @@ const CollectionPage = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        window.scrollTo(0, 0);
-
         const fetchAll = async () => {
             setLoading(true);
             try {
@@ -125,7 +123,8 @@ const CollectionPage = () => {
                                       pricePeriod="Details"
                                       onBookNow={() => {
                                         if (site.link && site.link !== '#') {
-                                            window.open(site.link, '_blank');
+                                            // Open the link in a mobile-sized popup window
+                                            window.open(site.link, 'MobilePreview', 'width=375,height=812,top=50,left=50,scrollbars=yes,resizable=yes');
                                         } else {
                                             alert("This project is currently viewed inside the portal.");
                                         }

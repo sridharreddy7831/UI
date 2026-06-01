@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { AnimeNavBar } from './ui/anime-navbar';
-import { Home, Info, Grid, Star, Briefcase, Mail, CreditCard } from 'lucide-react';
+import { Home, Info, Grid, Mail, CreditCard, HelpCircle } from 'lucide-react';
 
 const navItems = [
     { name: "Home", url: "/#home", icon: Home, section: "home" },
     { name: "About", url: "/#about", icon: Info, section: "about" },
     { name: "Portfolio", url: "/portfolio", icon: Grid, section: "" },
-    { name: "Testimonials", url: "/testimonials", icon: Star, section: "" },
-    { name: "Why Us", url: "/#pricing", icon: CreditCard, section: "pricing" },
+    { name: "Why Us", url: "/#why-us", icon: CreditCard, section: "why-us" },
+    { name: "Pricing", url: "/#pricing", icon: CreditCard, section: "pricing" },
+    { name: "FAQ", url: "/#faq", icon: HelpCircle, section: "faq" },
     { name: "Contact", url: "/#contact", icon: Mail, section: "contact" },
 ];
 
@@ -17,11 +17,10 @@ const Navbar = () => {
 
     useEffect(() => {
         // Intersection Observer for scroll spy
-        const sectionIds = navItems.map(i => i.section);
+        const sectionIds = navItems.flatMap(i => i.section ? [i.section] : []);
 
         const observer = new IntersectionObserver(
             (entries) => {
-                // Find the entry with the highest intersection ratio that is intersecting
                 const visible = entries
                     .filter(e => e.isIntersecting)
                     .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
@@ -57,13 +56,12 @@ const Navbar = () => {
         <>
             {/* Brand floating logo & Name – top left */}
             <div className="fixed top-4 left-4 lg:left-6 z-[10000] block pointer-events-none">
-                <a href="/#home" className="group flex items-center gap-2 pointer-events-auto">
+                <a href="/#home" className="group flex items-center gap-2 pointer-events-auto" aria-label="Uthsav Invitations Home">
                     <img
                         src="/logo.png"
-                        alt="Uthsav Invitations"
+                        alt="Uthsav Invitations Logo"
                         className="h-14 lg:h-20 w-auto object-contain drop-shadow-[0_0_10px_rgba(212,175,55,0.3)] group-hover:drop-shadow-[0_0_16px_rgba(212,175,55,0.6)] transition-all duration-300"
                     />
-
                 </a>
             </div>
 

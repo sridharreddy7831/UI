@@ -67,14 +67,27 @@ function CreativePricing({
                                 tier.popular ? "md:-mt-8 md:mb-8 z-10" : "z-0"
                             )}
                         >
-                            {/* Glass Card Container */}
-                            <div
+                            {/* Glass Card Container with Framer Motion spring hover */}
+                            <motion.div
+                                whileHover="hover"
+                                variants={{
+                                    hover: {
+                                        y: -8,
+                                        scale: 1.015,
+                                        boxShadow: tier.popular
+                                            ? "0 25px 60px rgba(212, 175, 55, 0.28)"
+                                            : "0 25px 50px rgba(212, 175, 55, 0.12)"
+                                    }
+                                }}
+                                transition={{ type: "spring", stiffness: 300, damping: 22 }}
                                 className={cn(
                                     "flex-1 relative flex flex-col p-8 md:p-10 rounded-3xl transition-all duration-500",
                                     "bg-white/40 backdrop-blur-xl border border-[#D4AF37]/30",
-                                    "group-hover:bg-white/50 group-hover:-translate-y-2",
-                                    tier.popular ? "border-[#D4AF37]/50 shadow-lg group-hover:border-[#D4AF37]/70" : "shadow-md"
+                                    tier.popular ? "border-[#D4AF37]/50 shadow-lg" : "shadow-md"
                                 )}
+                                style={{
+                                    transition: "background-color 500ms, border-color 500ms"
+                                }}
                             >
                                 {/* Glowing ambient background on hover */}
                                 <div className="absolute inset-0 bg-gradient-to-b from-[#D4AF37]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl pointer-events-none" />
@@ -115,7 +128,17 @@ function CreativePricing({
                                         {tier.features.map((feature, i) => (
                                             <div key={i} className="flex items-start gap-4">
                                                 <div className="mt-1 flex-shrink-0 w-5 h-5 rounded-full bg-[#D4AF37]/20 flex items-center justify-center">
-                                                    <Check className="w-3 h-3 text-[#D4AF37]" strokeWidth={3} />
+                                                    <motion.div
+                                                        variants={{
+                                                            hover: {
+                                                                scale: 1.2,
+                                                                rotate: 5,
+                                                                transition: { type: "spring", stiffness: 400, damping: 15 }
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Check className="w-3 h-3 text-[#D4AF37]" strokeWidth={3} />
+                                                    </motion.div>
                                                 </div>
                                                 <span className="text-[#4A2E2A]/80 text-sm">
                                                     {feature}
@@ -127,17 +150,19 @@ function CreativePricing({
 
                                 <div className="mt-auto relative z-10 pt-4">
                                     <button
+                                        onClick={() => tier.onClick && tier.onClick()}
                                         className={cn(
-                                            "w-full h-14 rounded-full font-sans font-semibold tracking-wide transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(212,175,55,0.3)]",
+                                            "w-full h-14 rounded-full font-sans font-semibold tracking-wide transition-all duration-300 group-hover:shadow-[0_0_20px_rgba(212,175,55,0.3)] cursor-pointer",
                                             tier.popular
                                                 ? "bg-[#D4AF37] text-[#4A2E2A] hover:bg-[#B68A2E] hover:text-[#4A2E2A]"
                                                 : "bg-white/20 text-[#4A2E2A] hover:bg-[#D4AF37] hover:text-white border border-[#D4AF37]/40"
                                         )}
+                                        aria-label={`Choose ${tier.name} package`}
                                     >
                                         Choose {tier.name}
                                     </button>
                                 </div>
-                            </div>
+                            </motion.div>
                         </motion.div>
                     ))}
                 </div>
